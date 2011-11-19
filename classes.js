@@ -46,7 +46,7 @@ enchant();
                 [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
                 [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
             ];
-            console.log(this);
+            //console.log(this);
             this.map = new Map(16, 16);
             this.map.image = enchant.game.assets['map2.gif'];
             this.map.loadData(blocks);
@@ -63,6 +63,8 @@ enchant();
             
             this.addEventListener('enterframe', function() {
                 this.x = 64 - this.bear.x;
+                /*for (i = 0; i < this.bullets.length; i++)
+                    this.bullets[i].x += this.x + 64 - this.bear.x;*/
             });
             
             
@@ -96,19 +98,21 @@ enchant();
 
     enchant.MapSprite = Class.create(Sprite, {
         initialize:function(x, y, image){
-          Sprite.call(this, x, y);//image.width, image.height);
-          this.image = image
-          this.x = x;
-          this.y = y;
-          this.v = new Vector(0, 0);
-          this.addEventListener('enterframe', function(){
-            this.update();
-          });
+            Sprite.call(this, x, y);//image.width, image.height);
+            this.image = image;
+            this.x = x;
+            this.y = y;
+            this.v = new Vector(0, 0);
+            this.addEventListener('enterframe', function(){
+                this.update();
+            });
         },
         update:function(){
-          this.x += this.v.x;
-          this.y += this.v.y;
-        }
+            this.x += this.v.x;
+            this.y += this.v.y;
+        },
+        //isOutOfScreen:function(){
+        //},
     });
     enchant.Character = Class.create(enchant.MapSprite, {
         initialize:function(x, y, image){
@@ -116,13 +120,15 @@ enchant();
             this.image = image
             this.speed = 1;
             this.offset = -30;
+            this.HP = 0;
             this.addEventListener('enterframe', function(){
                 this.update();
             });
         },
         shot: function(){
-            var b = new Bullet(this.x + this.image.width/2, this.y + this.offset);
-            enchant.world.bullets.push(b);// worldとgameはグローバルに定義しておく
+            var b = new Bullet(this.x + this.image.width/2, this.y + this.offset
+                , new Vector(0, -1), 10);
+            enchant.world.bullets.push(b);// worldとgameはグローバルにもたせておく
             enchant.game.currentScene.addChild(b);
         },
         update:function(){
@@ -132,17 +138,26 @@ enchant();
         }
     });
     enchant.Player = Class.create(enchant.Character, {
-        initialize:function(x, y, image, map) {//, , stage) {
+        initialize:function(x, y, image, map) {
             Character.call(this, x, y, image);
             this.ax = 0;
             this.ay = 0;
             this.pose = 0;
-            //this.frame = 0;
             this.jumping = true;
             this.jumpBoost = 0;
+            //this.jumpCount = 0;
             this.map = map;
-            //enchant.game = game;
-            //this.stage = stage;
+        },
+        shot: function(){
+            var b = new Bullet(24, 24//this.x + 16, this.y + this.offset
+                , new Vector(1, 0), 10, this);
+            b.x = this.x + 16;
+            b.y = this.y + this.offset;
+            enchant.world.bullets.push(b);
+            enchant.game.currentScene.addChild(b);
+            console.log(enchant.world.bullets.length);
+            console.log(b.width);
+            console.log(b.height);
         },
         update:function() {
             var friction = 0;
@@ -158,20 +173,20 @@ enchant();
             }
             if (this.jumping) {
                 if (!enchant.game.input.up || --this.jumpBoost < 0) {
-                    //this.ay = 0;
-                    this.v.y = 0;
+                    this.ay = 0;
+                    //this.v.y = 0;
                 }
             } else {
                 if (enchant.game.input.up) {
                     this.jumpBoost = 5;
-                    //this.ay = -5;
-                    this.v.y = -240;
+                    this.ay = -7;//-5;
+                    //this.v.y = -5;
                 }
             }
             //this.v = new Vector(0, 0);
             friction = 0.40;
-            if (enchant.game.input.left) this.v.x = -2;
-            if (enchant.game.input.right) this.v.x = 2;
+            if (enchant.game.input.left) this.v.x = -4;
+            if (enchant.game.input.right) this.v.x = 4;
             if (this.v.x > 0) {
                 this.v.x += -(.60 * friction);
                 if (this.v.x < 0) this.v.x = 0;
@@ -203,8 +218,7 @@ enchant();
                     this.frame = 0;
                 }
             }
-            this.v.y += 3;
-            //this.v.y += this.ay + 2; // 2 is gravity
+            this.v.y += this.ay +1.5;/*+ 2*/; // 2 is gravity
             /*this.ax = 0;
             if (enchant.game.input.left) this.v.x = -5;//this.ax -= 0.5;
             if (enchant.game.input.right) this.v.x = 5;//this.ax += 0.5;
@@ -225,6 +239,7 @@ enchant();
             this.v.y += this.ay + 2 ; // 2 is gravity*/
             
             // 最大速度を超えたら制限する
+            //if (this.v.y > 20) this.v.y = 20;
             this.v.x = Math.min(Math.max(this.v.x, -10), 10);
             this.v.y = Math.min(Math.max(this.v.y, -10), 10);
             var dest = new Rectangle(// undefined is not a function error
@@ -332,17 +347,24 @@ enchant();
     }
     });*/
     enchant.Bullet = Class.create(enchant.MapSprite, {
-        initialize: function(x, y){ 
+        initialize: function(x, y, bulDir, bulSpeed, user){ 
             MapSprite.call(this, x, y, enchant.game.assets['bullet.png']);
-            this.v.y = -1;
-            this.speed = 10;
+            this.v = bulDir;//this.v.y = -1;
+            this.speed = bulSpeed;//10;
+            console.log(user);
+            this.realPos = new Vector(user.x, user.y);
           },
         update: function(x, y){
             this.v.resize(this.speed);
-            this.moveBy(this.v.x, this.v.y);
+            //this.moveBy(this.v.x, this.v.y);
+            this.realPos.x += this.v.x;
+            this.realPos.y += this.v.y;
+            //console.log(this.realPos.x);
+            this.x = this.realPos.x + 64 - enchant.world.bear.x;
+            this.y = this.realPos.y;
             /*if(this.y < 100){
                //enchant.game.removeChild(this);
-             }*/
+            }*/
         }
     });
 
