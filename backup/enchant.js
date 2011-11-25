@@ -488,12 +488,6 @@ enchant.Event.B_BUTTON_DOWN = 'bbuttondown';
  */
 enchant.Event.B_BUTTON_UP = 'bbuttonup';
 
-enchant.Event.A_BUTTON_HASBEENDOWN = 'abuttonhasbeendown';
-enchant.Event.B_BUTTON_HASBEENDOWN = 'bbuttonhasbeendown';
-enchant.Event.LEFT_BUTTON_HASBEENDOWN = 'leftbuttonhasbeendown';
-enchant.Event.RIGHT_BUTTON_HASBEENDOWN = 'rightbuttonhasbeendown';
-enchant.Event.UP_BUTTON_HASBEENDOWN = 'upbuttonhasbeendown';
-enchant.Event.DOWN_BUTTON_HASBEENDOWN = 'downbuttonhasbeendown';
 
 /**
  * @scope enchant.EventTarget.prototype
@@ -728,22 +722,13 @@ enchant.Game = enchant.Class.create(enchant.EventTarget, {
          * @type {Object.<String, Boolean>}
          */
         this.input = {};
-        this._prevKeybind = {};// add
-        //this.isPressed = [0, 0, 0, 0, 0, 0];// キーが押されているかどうか（left, right, up, down, a,b）
-        //this.isPressed = [['left',0], ['right',0],['up',0],['down',0],['a',0],['b',0]];
-        //this.isPressed = ['left':{0}, 'right':{0}, 'up':{0}, 'down':{0}, 'a':{0}, 'b':{0}];// これだと通らない
-        this.isPressed = {left:0, right:0, up:0, down:0, a:0, b:0};// これだと通らない
-        /*this.isPressed = new Array();
-        this.isPressed['left'] = this.isPressed['right'] = this.isPressed['up'] = this.isPressed['down']
-            = this.isPressed['a'] = this.isPressed['b'] = 0;*/
-        console.log(this.isPressed);
         this._keybind = {};
         this.keybind(37, 'left');  // Left Arrow
         this.keybind(38, 'up');    // Up Arrow
         this.keybind(39, 'right'); // Right Arrow
         this.keybind(40, 'down');  // Down Arrow
+
         var c = 0;
-        
         ['left', 'right', 'up', 'down', 'a', 'b'].forEach(function(type) {
             this.addEventListener(type + 'buttondown', function(e) {
                 if (!this.input[type]) {
@@ -751,8 +736,6 @@ enchant.Game = enchant.Class.create(enchant.EventTarget, {
                     this.dispatchEvent(new enchant.Event((c++) ? 'inputchange' : 'inputstart'));
                 }
                 this.currentScene.dispatchEvent(e);
-                // 追加
-                
             });
             this.addEventListener(type + 'buttonup', function(e) {
                 if (this.input[type]) {
@@ -764,42 +747,27 @@ enchant.Game = enchant.Class.create(enchant.EventTarget, {
         }, this);
 
         if (initial) {
-            document.addEventListener('keydown', function(e) {// javascriptに元からあるイベント
+            document.addEventListener('keydown', function(e) {
                 game.dispatchEvent(new enchant.Event('keydown'));
                 if ((37 <= e.keyCode && e.keyCode <= 40) || e.keyCode == 32) {
                     e.preventDefault();
                     e.stopPropagation();
                 }
+
                 if (!game.running) return;
-                
                 var button = game._keybind[e.keyCode];
                 if (button) {
                     var e = new enchant.Event(button + 'buttondown');
                     game.dispatchEvent(e);
                 }
-                // 追加
-                if (game.isPressed[button] == 0) {
-                    game.isPressed[button] = 1;
-                    var e  = new enchant.Event(button + 'buttonhasbeendown');
-                    game.dispatchEvent(e);
-                    
-                    /*console.log(game.isPressed[button]);
-                    console.log(button);
-                    console.log(game.isPressed);*/
-                }
             }, true);
             document.addEventListener('keyup', function(e) {
                 if (!game.running) return;
                 var button = game._keybind[e.keyCode];
-                //console.log(button);
                 if (button) {
                     var e = new enchant.Event(button + 'buttonup');
                     game.dispatchEvent(e);
                 }
-                //console.log(game.isPressed);
-                //console.log(button);
-                // 初期化する
-                game.isPressed[button] = 0;
             }, true);
             if (TOUCH_ENABLED) {
                 document.addEventListener('touchstart', function(e) {

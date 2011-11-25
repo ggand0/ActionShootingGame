@@ -14,7 +14,11 @@ window.onload = function() {
         var pad = new Pad();
         pad.x = 0;
         pad.y = 224;
+        var apad = new APad();
+        apad.x = 224;
+        apad.y = 224;
         gameScene.addChild(pad);
+        gameScene.addChild(apad);
         gameScene.backgroundColor = 'rgb(182, 255, 255)';
         
         game.pushScene(gameScene);
