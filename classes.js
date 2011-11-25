@@ -23,6 +23,9 @@ enchant();
     enchant.World = Class.create(Group, {
         initialize:function(){
             Group.call(this);
+            this.addEventListener('enterframe', function() {
+                this.update();
+            });
             this.bullets = new Array();
             this.enemies = new Array();
             var blocks = [
@@ -55,13 +58,16 @@ enchant();
             var bear = this.bear;
             this.addChild(bear);
             this.addChild(map);
+            console.log("this.bear:");console.log(this.bear);
             
             this.addEventListener('enterframe', function() {
                 this.x = 64 - this.bear.x;
             });
-            this.enemy = new Enemy(32, 32, enchant.game.assets['chara1.gif']);
-            this.enemies.push(this.enemy);
-            this.addChild(this.enemy);
+            this.enemy = new Enemy(32, 32, enchant.game.assets['chara1.gif'], this.map);
+            var enemy = this.enemy;
+            this.enemies.push(enemy);
+            console.log("this.enemy:");console.log(this.enemies);
+            this.addChild(enemy);
             /*var background = new Sprite(640, 480);
             background.image = enchant.game.assets['background.png'];
             enchant.game.currentScene.addChild(background);
@@ -85,8 +91,39 @@ enchant();
             var bgm = enchant.Sound.load("bgm.mp3", 'audio/mp3');
             bgm.play();*/
         },
+        update:function(){
+            this.collide();
+            this.popEnemy();
+        },
+        collide:function(){
+            //console.log(this.bullets);
+            this.bullets.forEach(function(b, i) {
+                var ishit = false;
+                if (b.isHostile) {
+                    /*console.log(this);
+                    console.log(this.bear);*/
+                    //ishit = this.bear.intersect(b);
+                    ishit = enchant.world.bear.intersect(b);
+                    //console.log(ishit);
+                } else {
+                    console.log(enchant.world.enemies);
+                    enchant.world.enemies.forEach(function(e, j) {// this.enemies....
+                        ishit = e.intersect(b);
+                        if (ishit) e.HP--;
+                        console.log(e.HP);
+                    })
+                }
+            })
+        },
         popEnemy:function(){
-
+            this.enemies.forEach(function(e, i) {
+                if (e.HP <= 0) {
+                    console.log(e);
+                    enchant.game.currentScene.removeChild(e);
+                    enchant.world.removeChild(e);
+                    enchant.world.enemies.splice(e);
+                }
+            })
         }
     });
 
@@ -111,9 +148,10 @@ enchant();
         },
     });
     enchant.Character = Class.create(enchant.MapSprite, {
-        initialize:function(x, y, image){
+        initialize:function(x, y, image, map){
             MapSprite.call(this, x, y, image);
             this.image = image;
+            this.map = map;
             this.speed = 1;
             this.offset = -30;
             this.HP = 0;
@@ -131,95 +169,8 @@ enchant();
             this.v.resize(this.speed);
             this.x += this.v.x;
             this.y += this.v.y;
-        }
-    });
-    
-    enchant.Player = Class.create(enchant.Character, {
-        initialize:function(x, y, image, map) {
-            Character.call(this, x, y, image);
-            //console.log(x);
-            this.ax = 0;
-            this.ay = 0;
-            this.pose = 0;
-            //this.pose0 = 0;
-            this.d = 0;
-            this.jumping = true;
-            this.jumpBoost = 0;
-            //this.jumpCount = 0;
-            this.map = map;
-            this.addEventListener(enchant.Event.A_BUTTON_UP, function() {// konai
-                console.log("abuttondown2");
-                this.shot(1);
-            });
-            this.addEventListener('abuttonup', function() {// konai
-                console.log("abuttondown");
-                this.shot(1);
-            });/**/
-            this.addEventListener('touchstart', function() {// kr
-                console.log("touchstart");
-            });
-            this.addEventListener(enchant.Event.TOUCH_START, function() {// kr
-                console.log("touchstart2");
-            });
-            /*enchant.game.addEventListener('abuttondown', function() {// gameにイベントを追加しないとダメらしい abuttonupはきた
-                enchant.world.bear.shot(1);
-            });*/
-            enchant.game.addEventListener('abuttonhasbeendown', function() {// gameにイベントを追加しないとダメらしい abuttonupはきた
-                enchant.world.bear.shot(1);
-                console.log('abuttonhasbeendown');
-            });
-            /*
-            enchant.game.addEventListener(enchant.Event.A_BUTTON_DOWN, function(e) {// gameにイベントを追加しないとダメらしい
-                enchant.world.bear.shot(1);
-            });*/
-            //this.type = 2;
-            console.log(this);
         },
-        shot: function(type){
-            switch (type) {
-                case 0:
-                    var b = new Bullet(24, 24//this.x + 16, this.y + this.offset
-                        , new Vector(1, 0), 10, this);
-                    enchant.world.bullets.push(b);
-                    enchant.game.currentScene.addChild(b);
-                    break;
-                case 1:
-                    var speed = 5;	                                                                                        // 個々のbulletのスピード
-                    var width = 60;                                                                                         // 射撃するbulletsの幅(degree)
-                    //rad = Math.Atan2(targetObject.position.Y - position.Y, targetObject.position.X - position.X);     // 全体としての基準となる向き.
-                    var rad = Math.atan2(this.y - this.y, this.x + 160 - this.x);
-                    var rotation = 0.0;                                                                                     // 最終的な個々のbulletに与える角度(radian)
-
-                    // 角度の割り振り
-                    for (i = 0; i < 5; i++) {
-                        var tmp = (4 - i) / 4.0;              // 0.0～1.0に丸める
-                        tmp -= .5;	                // -0.5～0.5にする
-                        //console.log(tmp);
-                        var rot = tmp * width;	        // 角度を求める
-                        rotation = rad + rot * Math.PI / 180.0//MathHelper.ToRadians(rot);
-                        
-                       
-                        //bullets[i].rot = -(float)rotation;
-                        //bullets[i].degree = MathHelper.ToDegrees((float)rotation);
-                        //b.v.x = Math.cos(rotation) * speed;
-                        //b.v.y = Math.sin(rotation) * speed;
-                        var vx = Math.cos(rotation) * speed;
-                        var vy = Math.sin(rotation) * speed;
-                        var b = new Bullet(24, 24, new Vector(vx, vy), 10, this);
-                        enchant.world.bullets.push(b);
-                        enchant.game.currentScene.addChild(b);
-                        //console.log(b.v);
-                    }
-                    break;
-            }
-            //b.x = this.x + 16;
-            //b.y = this.y + this.offset;
-            
-            /*console.log(enchant.world.bullets.length);
-            console.log(b.width);
-            console.log(b.height);*/
-        },
-        update:function() {
+        update_motion:function(){
             var friction = 0;
             if (this.v.x > 0.3) {
                 friction = -0.3;
@@ -231,39 +182,8 @@ enchant();
             } else if (this.v.x < 0) {
                 friction = -this.v.x;
             }
-            if (this.jumping) {
-                if (!enchant.game.input.up || --this.jumpBoost < 0) {
-                    this.ay = 0;
-                    //this.v.y = 0;
-                }
-            } else {
-                if (enchant.game.input.up) {
-                    this.jumpBoost = 5;
-                    this.ay = -7;//-5;
-                    //this.v.y = -5;
-                }
-            }
-            //this.v = new Vector(0, 0);
-            // 移動とアニメーション
             friction = 0.40;
-            this.frame = 0;
-            this.d++;
             
-            //console.log(enchant.game.frame);
-            //console.log(this.d);// こっちのカウンタのほうが速い
-            if (enchant.game.input.left) this.v.x = -4;
-            if (enchant.game.input.right) {
-                this.v.x = 4;
-                //console.log(enchant.game.frame);
-                //console.log(enchant.game);
-                if (this.d % 4 == 0) {//enchant.game.frameだと動かないッ...！！
-                    this.pose++;
-                    this.pose %= 2;
-                }
-                //console.log(this.pose);
-                this.frame = this.pose + 1;
-                //console.log(this.frame);
-            }
             // ブレーキング
             if (this.v.x > 0) {
                 this.v.x += -(.60 * friction);
@@ -275,37 +195,8 @@ enchant();
             }
             if (this.v.x > 0) this.scaleX = 1;
             if (this.v.x < 0) this.scaleX = -1;
-            /*if (this.v.x != 0) {
-                if (enchant.game.frame % 4 == 0) {
-                    this.pose++;
-                    this.pose %= 2;// 0, 1にする
-                    //console.log(this.pose);
-                }
-                this.frame = this.pose + 1;// frame == 1, 2
-                console.log(this.frame);
-            } else {
-                this.frame = 0;
-            }*/
-
-            this.v.y += this.ay + 1.5;/*+ 2*/ // 2 is gravity
-            /*this.ax = 0;
-            if (enchant.game.input.left) this.v.x = -5;//this.ax -= 0.5;
-            if (enchant.game.input.right) this.v.x = 5;//this.ax += 0.5;
-            if (this.ax > 0) this.scaleX = 1;
-            if (this.ax < 0) this.scaleX = -1;
-            if (this.ax != 0) {
-                if (enchant.game.frame % 3 == 0) {
-                    this.pose++;
-                    this.pose %= 2;// 0, 1にする
-                    //console.log(this.pose);
-                }
-                this.frame = this.pose + 1;// 1, 2
-                console.log(this.frame);
-            } else {
-                this.frame = 0;
-            }
-            this.v.x += this.ax + friction;
-            this.v.y += this.ay + 2 ; // 2 is gravity*/
+            
+            this.v.y += /*this.ay + */0.60;
             
             // 最大速度を超えたら制限する
             //if (this.v.y > 20) this.v.y = 20;
@@ -368,6 +259,143 @@ enchant();
             }
             this.x = dest.x-5;
             this.y = dest.y-2;
+        }
+    });
+    
+    enchant.Player = Class.create(enchant.Character, {
+        initialize:function(x, y, image, map) {
+            Character.call(this, x, y, image, map);
+            //console.log(x);
+            this.ax = 0;
+            this.ay = 0;
+            this.pose = 0;
+            //this.pose0 = 0;
+            this.d = 0;
+            this.jumping = true;
+            this.jumpBoost = 0;
+            //this.jumpCount = 0;
+            this.map = map;
+            /*this.addEventListener(enchant.Event.A_BUTTON_UP, function() {// konai
+                console.log("abuttondown2");
+                this.shot(1);
+            });*/
+            this.addEventListener('abuttonup', function() {// konai
+                console.log("abuttondown");
+                this.shot(1);
+            });/**/
+            this.addEventListener('touchstart', function() {// kr
+                console.log("touchstart");
+            });
+            this.addEventListener(enchant.Event.TOUCH_START, function() {// kr
+                console.log("touchstart2");
+            });
+            /*enchant.game.addEventListener('abuttondown', function() {// gameにイベントを追加しないとダメらしい abuttonupはきた
+                enchant.world.bear.shot(1);
+            });*/
+            enchant.game.addEventListener('abuttonhasbeendown', function() {// gameにイベントを追加しないとダメらしい abuttonupはきた
+                enchant.world.bear.shot(1);
+                console.log('abuttonhasbeendown');
+            });
+            this.addEventListener('abuttonhasbeendown', function() {
+                this.shot(1);
+                console.log('abuttonhasbeendown');
+            });
+            /*
+            enchant.game.addEventListener(enchant.Event.A_BUTTON_DOWN, function(e) {// gameにイベントを追加しないとダメらしい
+                enchant.world.bear.shot(1);
+            });*/
+            //this.type = 2;
+            //console.log(this);
+        },
+        shot: function(type){
+            switch (type) {
+                case 0:
+                    var b = new Bullet(24, 24//this.x + 16, this.y + this.offset
+                        , new Vector(1, 0), 10, this, 'Player');//'Player'
+                    enchant.world.bullets.push(b);
+                    enchant.game.currentScene.addChild(b);
+                    break;
+                case 1:
+                    var speed = 5;	                                                                                        // 個々のbulletのスピード
+                    var width = 60;                                                                                         // 射撃するbulletsの幅(degree)
+                    //rad = Math.Atan2(targetObject.position.Y - position.Y, targetObject.position.X - position.X);     // 全体としての基準となる向き.
+                    var rad = Math.atan2(this.y - this.y, this.x + 160 - this.x);
+                    var rotation = 0.0;                                                                                     // 最終的な個々のbulletに与える角度(radian)
+
+                    // 角度の割り振り
+                    for (i = 0; i < 5; i++) {
+                        var tmp = (4 - i) / 4.0;              // 0.0～1.0に丸める
+                        tmp -= .5;	                // -0.5～0.5にする
+                        //console.log(tmp);
+                        var rot = tmp * width;	        // 角度を求める
+                        rotation = rad + rot * Math.PI / 180.0//MathHelper.ToRadians(rot);
+                        
+                       
+                        //bullets[i].rot = -(float)rotation;
+                        //bullets[i].degree = MathHelper.ToDegrees((float)rotation);
+                        //b.v.x = Math.cos(rotation) * speed;
+                        //b.v.y = Math.sin(rotation) * speed;
+                        var vx = Math.cos(rotation) * speed;
+                        var vy = Math.sin(rotation) * speed;
+                        var b = new Bullet(24, 24, new Vector(vx, vy), 10, this, 'Player');
+                        enchant.world.bullets.push(b);
+                        enchant.game.currentScene.addChild(b);
+                        //console.log(b.v);
+                    }
+                    break;
+            }
+            //b.x = this.x + 16;
+            //b.y = this.y + this.offset;
+            
+            /*console.log(enchant.world.bullets.length);
+            console.log(b.width);
+            console.log(b.height);*/
+        },
+        update:function() {
+            if (this.jumping) {
+                if (!enchant.game.input.up/* || --this.jumpBoost < 0*/) {
+                    //this.ay = 0;
+                    //this.v.y = 0;
+                }
+            } else {
+                if (enchant.game.input.up) {
+                    //this.jumpBoost = 5;
+                    //this.ay = -7;//-5;
+                    this.v.y = -20;
+                }
+            }
+            // 移動とアニメーション
+            this.frame = 0;
+            this.d++;
+            
+            //console.log(enchant.game.frame);
+            //console.log(this.d);// こっちのカウンタのほうが速い
+            if (enchant.game.input.left) this.v.x = -4;
+            if (enchant.game.input.right) {
+                this.v.x = 4;
+                //console.log(enchant.game.frame);
+                //console.log(enchant.game);
+                if (this.d % 4 == 0) {//enchant.game.frameだと動かないッ...！！
+                    this.pose++;
+                    this.pose %= 2;
+                }
+                //console.log(this.pose);
+                this.frame = this.pose + 1;
+                //console.log(this.frame);
+            }
+            
+            /*if (this.v.x != 0) {
+                if (enchant.game.frame % 4 == 0) {
+                    this.pose++;
+                    this.pose %= 2;// 0, 1にする
+                    //console.log(this.pose);
+                }
+                this.frame = this.pose + 1;// frame == 1, 2
+                console.log(this.frame);
+            } else {
+                this.frame = 0;
+            }*/
+            this.update_motion();
 
             if (this.y > 320) {
                 var score = Math.round(this.x);//bear.x);
@@ -382,42 +410,10 @@ enchant();
                 });*/
                 this.removeEventListener('enterframe', arguments.callee);
             }
-            /*if(enchant.game.input.a){
-                this.shot();
-            }*/
-            
         }
     });
-    /*initialize: function(x, y, image){
-      Character.call(this, x, y, image);
-      this.speed = 5;
-      this.addEventListener('enterframe', function(){
-        this.input();
-        this.update();
-      });
-    },
-    input:function(){
-      this.v.x = 0;
-      this.v.y = 0;
-      if(enchant.game.input.left){
-        this.v.x = -1;
-      }
-      if(enchant.game.input.right){
-        this.v.x = 1;
-      }
-      if(enchant.game.input.down){
-        this.v.y = 1;
-      }
-      if(enchant.game.input.up){
-        this.v.y = -1;
-      }
-      if(enchant.game.input.a){
-        this.shot();
-      }
-    }
-    });*/
     enchant.Bullet = Class.create(enchant.MapSprite, {
-        initialize: function(x, y, bulDir, bulSpeed, user) {//, type){ 
+        initialize: function(x, y, bulDir, bulSpeed, user, classname) {//, type){ 
             MapSprite.call(this, x, y, enchant.game.assets['bullet.png']);
             this.v = bulDir;//this.v.y = -1;
             /*switch (type) {
@@ -433,6 +429,16 @@ enchant();
             this.realPos.y = user.y + 16;// + this.offset
             this.x = this.realPos.x + 64 - enchant.world.bear.x;
             this.y = this.realPos.y;
+            this.user = user;
+            /*console.log(typeof(this.user));// object　
+            console.log(typeof(this.user)==enchant.Player);
+            this.isHostile = !(typeof(this.user) == enchant.Player);
+            console.log(this.isHostile);*/
+            this.classname = classname;
+            this.isHostile = !(this.classname == 'Player');
+            console.log(this.isHostile);
+            //console.log(this.classname);
+            //console.log(this.isHostile);
           },
         update: function(x, y) {
             this.v.resize(this.speed);
@@ -450,17 +456,20 @@ enchant();
     });
     
     enchant.Enemy = Class.create(enchant.Character, {
-        initialize:function(x, y) {
-            Character.call(this, x, y, enchant.game.assets['enemy.png']);
-            this.hp = 3;
+        initialize:function(x, y, image, map) {
+            Character.call(this, x, y, image, map);
+            this.HP = 3;
             this.v.x = -3;
+            this.x = 100;
         },
         update:function() {
-            if(this.hp < 0){
-              this.x = 10000;
+            this.update_motion();
+            if (this.HP < 0) {
+              //this.x = 10000;
+              
             }
             r = Math.floor(Math.random()*30);
-            if(r==0){
+            if (r == 0) {
               this.shot();
             }
         },
@@ -468,7 +477,7 @@ enchant();
             //r = Math.floor(Math.random()*2);
             if (enchant.game.frame % 30 == 0) {
                 var b = new Bullet(24, 24//this.x + 16, this.y + this.offset
-                        , new Vector(-1, 0), 10, this);
+                        , new Vector(-1, 0), 10, this, 'Enemy');
                 enchant.world.bullets.push(b);
                 enchant.game.currentScene.addChild(b);
             }

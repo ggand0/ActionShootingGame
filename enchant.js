@@ -796,8 +796,8 @@ enchant.Game = enchant.Class.create(enchant.EventTarget, {
                     var e = new enchant.Event(button + 'buttonup');
                     game.dispatchEvent(e);
                 }
-                //console.log(game.isPressed);
-                //console.log(button);
+                /*console.log("keyup:");
+                console.log(button);*/
                 // 初期化する
                 game.isPressed[button] = 0;
             }, true);

@@ -6,7 +6,7 @@ window.onload = function() {
     enchant.game = game;
     game.fps = 24;
     game.preload('chara1.gif', 'map2.gif', 'bear.gif', 'bullet.png');
-    game.keybind(90, 'a');
+    game.keybind(90, 'a');// ZÉLÅ[
     game.onload = function() {
         var gameScene = new Scene();
         enchant.world = new World();
@@ -20,7 +20,6 @@ window.onload = function() {
         gameScene.addChild(pad);
         gameScene.addChild(apad);
         gameScene.backgroundColor = 'rgb(182, 255, 255)';
-        
         game.pushScene(gameScene);
     };
     game.start();
