@@ -1,8 +1,7 @@
 enchant();
 
 window.onload = function() {
-
-    var game = new Game(640, 480);
+    var game = new Game(320, 320);
     enchant.game = game;
     game.fps = 24;
     game.preload('chara1.gif', 'map2.gif', 'bear.gif', 'bullet.png','map.gif');
