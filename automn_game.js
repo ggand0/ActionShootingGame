@@ -2,15 +2,33 @@ enchant();
 
 window.onload = function() {
 
-    var game = new Game(320, 320);
+    var game = new Game(640, 480);
     enchant.game = game;
     game.fps = 24;
-    game.preload('chara1.gif', 'map2.gif', 'bear.gif', 'bullet.png');
+    game.preload('chara1.gif', 'map2.gif', 'bear.gif', 'bullet.png','map.gif');
     game.keybind(90, 'a');// Zキー
+    game.keybind(88, 'b');// Xキー
     game.onload = function() {
         var gameScene = new Scene();
         enchant.world = new World();
         gameScene.addChild(enchant.world);
+        //game.WIDTH = 640;
+        //game.HEIGHT = 480;
+        
+        enchant.game.score = 0;
+        var score = new Label();
+        score.font = "12px 'Arial Black'";                      
+        score.addEventListener('enterframe', function() {
+            this.text = "Score : " + enchant.game.score;
+        });
+        var UI = new Label();
+        UI.font = "12px 'Arial Balck'";
+        UI.addEventListener('enterframe', function() {
+            this.text = "HP : " + enchant.world.bear.HP;
+        });
+        UI.x = 280;
+        gameScene.addChild(score);
+        gameScene.addChild(UI);
         var pad = new Pad();
         pad.x = 0;
         pad.y = 224;
