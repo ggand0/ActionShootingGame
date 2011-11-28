@@ -4,7 +4,8 @@ window.onload = function() {
     var game = new Game(320, 320);
     enchant.game = game;
     game.fps = 24;
-    game.preload('chara1.gif', 'map2.gif', 'bear.gif', 'bullet.png','map.gif');
+    game.preload('chara1.gif', 'map2.gif', 'bear.gif', 'bullet.png','map.gif', 'effect0.gif'
+    , 'blast_small.wav', 'bullet.wav');
     game.keybind(90, 'a');// Zキー
     game.keybind(88, 'b');// Xキー
     game.onload = function() {
