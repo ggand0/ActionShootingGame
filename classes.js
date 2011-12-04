@@ -59,13 +59,13 @@ enchant();
             this.addChild(bear);
             this.addChild(map);
             console.log("this.bear:");console.log(this.bear);
-            this.enemy = new Enemy(32, 32, enchant.game.assets['chara1.gif'], this.map, new Vector(100, 0));
+            this.enemy = new ChaseEnemy(32, 32, enchant.game.assets['chara1.gif'], this.map, new Vector(100, 0), 1);
             var enemy = this.enemy;
             this.enemies.push(enemy);
             this.addChild(enemy);
             
             for (i = 0; i < 100; i++) {
-                var e = new Enemy(32, 32, enchant.game.assets['chara1.gif'], this.map, new Vector(50*i, 0));
+                var e = new Enemy(32, 32, enchant.game.assets['chara1.gif'], this.map, new Vector(50*i, 0), 1);
                 this.enemies.push(e);
                 this.addChild(e);
                 //enchant.game.currentScene.addChild(e);
@@ -99,6 +99,17 @@ enchant();
             //this.popEnemy();
             enchant.world.x = 64 - enchant.world.bear.x;
             //if (enchant.game.frame % 60 == 0) console.log(enchant.world.bullets);
+            var fallNum = 0;
+            enchant.world.enemies.forEach(function(e, j) {
+                if (e.y > enchant.game.height && e.isAlive) {
+                    //console.log(enchant.world.enemies.length);
+                    e.pop(j);
+                    //enchant.world.enemies.splice(e, 1);// なぜか一気に0まで消される
+                    fallNum++;
+                }
+            });
+            if (fallNum > 0) console.log(fallNum);
+            //if (enchant.world.enemies.length < 0) console.log(enchant.world.enemies.length);
         },
         collide:function() {
             enchant.world.bullets.forEach(function(b, i) {
@@ -107,23 +118,30 @@ enchant();
                     ishit = enchant.world.bear.intersect(b);
                     if (ishit) {
                         enchant.world.bear.HP--;
-                        b.pop();
+                        b.pop(i);
                     }
                 } else {
                     enchant.world.enemies.forEach(function(e, j) {
-                        if (e.isAlive) {
+                        //if (e.isAlive) {
+                            //console.log("t");
                             ishit = e.intersect(b);
                             if (ishit) {
+                                console.log("hit");
+                                enchant.game.score += 100;
                                 e.HP--;
+                                b.pop();
                                 if (e.HP <= 0) {
+                                    enchant.game.score += 500;
                                     var ef = new Effect(16, 16, enchant.game.assets['effect0.gif'], 5, new Vector(e.x, e.y));
                                     enchant.world.addChild(ef);
                             
-                                    b.pop();
-                                    e.pop();
+                                    //b.pop();
+                                    e.pop(j);
                                 }
                             }
-                        }
+                            
+                            
+                        //}
                     })
                 }
             })
@@ -138,6 +156,10 @@ enchant();
             this.v = new Vector(0, 0);
             this.addEventListener('enterframe', function(){
                 this.update();
+            });
+            // デバッグ用
+            this.addEventListener('touchstart', function() {// kr
+                console.log(this.x); console.log(this.y);
             });
         },
         update:function(){
@@ -321,12 +343,6 @@ enchant();
                 //console.log("abuttondown");
                 this.shot(1);
             });/**/
-            this.addEventListener('touchstart', function() {// kr
-                console.log("touchstart");
-            });
-            this.addEventListener(enchant.Event.TOUCH_START, function() {// kr
-                console.log("touchstart2");
-            });
             /*enchant.game.addEventListener('abuttondown', function() {// gameにイベントを追加しないとダメらしい abuttonupはきた
                 enchant.world.bear.shot(1);
             });*/
@@ -481,13 +497,15 @@ enchant();
             MapSprite.call(this, x, y, enchant.game.assets['bullet.png']);
             this.v = bulDir;//this.v.y = -1;
             this.speed = bulSpeed;//10;
-            this.realPos = new Vector(0, 0);
+            /*this.realPos = new Vector(0, 0);
             this.realPos.x = user.x + 16;
             this.realPos.y = user.y + 16;// + this.offset
-            this.x = this.realPos.x; this.y = this.realPos.y;
+            this.x = this.realPos.x; this.y = this.realPos.y;*/
             //this.x = this.realPos.x + 64 - enchant.world.bear.x;
             //this.y = this.realPos.y;
             this.user = user;
+            this.x = user.x + 16;
+            this.y = user.y + 16;
             /*console.log(typeof(this.user));// object
             console.log(typeof(this.user)==enchant.Player);
             this.isHostile = !(typeof(this.user) == enchant.Player);
@@ -519,19 +537,19 @@ enchant();
             return this.x < -this.image.width + b.x || this.x > enchant.game.width + b.x// + enchant.world.bear.x
                 || this.y < -this.image.height || this.y > enchant.game.height;
         },
-        pop:function() {
+        pop:function(i) {
             enchant.world.removeChild(this);
-            enchant.world.bullets.splice(this, 1);
+            enchant.world.bullets.splice(i, 1);//(this, 1);
             this.removeEventListener('enterframe', arguments.callee);
         }
     });
     enchant.Enemy = Class.create(enchant.Character, {
-        initialize:function(x, y, image, map, pos) {
+        initialize:function(x, y, image, map, pos, type) {
             Character.call(this, x, y, image, map);
-            this.HP = 7;
+            this.HP = 3;
             this.v.x = -3;
             //this.x = 100;
-            
+            this.type = type;
             this.x = pos.x;
             this.y = pos.y;//this.pos = pos;
         },
@@ -545,20 +563,46 @@ enchant();
         },
         shot:function() {
             //r = Math.floor(Math.random()*2);
-            if (enchant.game.frame % 30 == 0) {
-                var b = new Bullet(24, 24//this.x + 16, this.y + this.offset
-                        , new Vector(-1, 0), 10, this, 'Enemy');
-                enchant.world.bullets.push(b);
-                enchant.world.addChild(b);
-                //enchant.game.currentScene.addChild(b);
+            switch(this.type) {
+                case 0:
+                    if (enchant.game.frame % 30 == 0) {
+                        var b = new Bullet(24, 24//this.x + 16, this.y + this.offset
+                                , new Vector(-1, 0), 10, this, 'Enemy');
+                        enchant.world.bullets.push(b);
+                        enchant.world.addChild(b);
+                        //enchant.game.currentScene.addChild(b);
+                    }
+                    break;
+                case 1:
+                    var s = new Vector(0, 0);
+                    s.x = Math.atan2(enchant.world.bear.x - this.x, enchant.world.bear.y - this.y);
+                    
+                    var b = new Bullet(24, 24, s, 10, this, 'Enemy');
+                    break;
             }
         },
-        pop:function() {
+        pop:function(i) {
             this.isAlive = false;
             enchant.world.removeChild(this);
-            enchant.world.enemies.splice(this, 1);
+            enchant.world.enemies.splice(i, 1);//(this, 1);
             this.removeEventListener('enterframe', arguments.callee);
             //console.log(enchant.world.enemies.length);
+            delete this;
+            console.log("dead");
+        }
+    });
+    enchant.ChaseEnemy = Class.create(enchant.Enemy, {
+        initialize:function(x, y, image, map, pos, type) {
+            enchant.Enemy.call(this, x, y, image, map, pos, type);
+            this.HP = 2;
+        },
+        update:function() {
+            this.v.x = this.x < enchant.world.bear.x ? 3 : -3;
+            this.update_motion_ex();
+        },
+        update_motion_ex:function() {
+            if (enchant.game.frame % 60 == 0) this.v.y = -20;
+            this.update_motion();
         }
     });
     
