@@ -11,7 +11,7 @@ enchant();
             this.HP = 30;
             this.isDamaged = false;
             this.iniTimer = false;
-            this.d = 0;
+            this.frameCount = 0;
             this.jumping = true;
             this.jumpBoost = 0;
             this.map = map;
@@ -72,15 +72,19 @@ enchant();
                     var rad = 0;
                     switch (dir) {
                         case 0:
-                            rad = Math.atan2(this.y - this.y, this.x + 160 - this.x);
+                            if (this.scaleX > 0) rad = Math.atan2(this.y - this.y, this.x + 160 - this.x);
+                            else rad = Math.atan2(this.y - this.y, this.x - 160 - this.x);
                             break;
                         case 1:
-                            rad = Math.atan2((this.y - 160) - this.y, this.x + 160 - this.x);
+                            if (this.scaleX > 0) rad = Math.atan2((this.y - 160) - this.y, this.x + 160 - this.x);
+                            else rad = Math.atan2((this.y - 160) - this.y, this.x - 160 - this.x);
                             break;
                         case 2:
-                            rad = Math.atan2((this.y + 160) - this.y, this.x + 160 - this.x);
+                            if (this.scaleX > 0) rad = Math.atan2((this.y + 160) - this.y, this.x + 160 - this.x);
+                            else rad = Math.atan2((this.y + 160) - this.y, this.x - 160 - this.x);
                             break;
                     }
+                    
                     
                     var rotation = 0.0;                                                                                     // 最終的な個々のbulletに与える角度(radian)
 
@@ -118,7 +122,7 @@ enchant();
 
             this.timer.count();
         },
-        damage_detection:function() {
+        damage_detection:function() {// ダメージ判定、死亡判定
             if (this.isDamaged && !this.iniTimer) {
                 this.timer.set(30);
                 this.timer.play();
@@ -127,9 +131,12 @@ enchant();
             }
             if (this.isDamaged && this.iniTimer && this.timer.isOver()) {
                 this.iniTimer = false;
-                this.isDamged = false;
+                this.isDamaged = false;
                 this.v = new Vector(0, 0);
+                console.log("over");
             }
+            /*if (this.isDamaged) console.log("damaged = true");
+            else console.log("damaged = false");*/
             
             if (this.y > enchant.game.height) {
                 var score = Math.round(this.x);//bear.x);
@@ -145,9 +152,9 @@ enchant();
                 this.removeEventListener('enterframe', arguments.callee);
             }
         },
-        update_motion_ex:function() {
+        update_motion_ex:function() {// 移動とアニメーション
             if (this.jumping) {
-                if (!enchant.game.input.b/* || --this.jumpBoost < 0*/) {
+                if (!enchant.game.input.b) {
                     //this.ay = 0;
                     //this.v.y = 0;
                 }
@@ -160,7 +167,7 @@ enchant();
             }
             // 移動とアニメーション
             this.frame = 0;
-            this.d++;
+            this.frameCount++;
             //console.log(enchant.game.frame);
             //console.log(this.d);// こっちのカウンタのほうが速い
             if (enchant.game.input.left) this.v.x = -4;
@@ -168,24 +175,24 @@ enchant();
                 this.v.x = 4;
                 //console.log(enchant.game.frame);
                 //console.log(enchant.game);
-                if (this.d % 4 == 0) {//enchant.game.frameだと動かないッ...！！
+                
+                /*if (this.d % 4 == 0) {//enchant.game.frameだと動かないッ...！！
                     this.pose++;
                     this.pose %= 2;
                 }
-                this.frame = this.pose + 1;
+                this.frame = this.pose + 1;*/
             }
             
-            /*if (this.v.x != 0) {
-                if (enchant.game.frame % 4 == 0) {
+            // アニメーション：enchant.game.frameだと動かないので注意
+            if (this.v.x != 0) {
+                if (this.frameCount % 4 == 0) {
                     this.pose++;
                     this.pose %= 2;// 0, 1にする
-                    //console.log(this.pose);
                 }
                 this.frame = this.pose + 1;// frame == 1, 2
-                console.log(this.frame);
             } else {
                 this.frame = 0;
-            }*/
+            }
             this.update_motion();
         }
     });

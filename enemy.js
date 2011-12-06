@@ -63,7 +63,7 @@ enchant();
             this.update_motion();
         }
     });
-    enchnat.ChargeEnemy = Class.create(enchant.Enemy, {
+    enchant.ChargeEnemy = Class.create(enchant.Enemy, {
         initialize:function(x, y, image, map, pos, type) {
             enchant.Enemy.call(this, x, y, image, map, pos, type);
             this.HP = 2;

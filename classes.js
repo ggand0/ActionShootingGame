@@ -26,6 +26,7 @@ enchant();
             this.addEventListener('enterframe', function() {
                 this.update();
             });
+            this.playerPos = 90;//64
             this.bullets = new Array();
             this.enemies = new Array();
             var blocks = [
@@ -97,7 +98,7 @@ enchant();
         update:function() {
             this.collide();
             //this.popEnemy();
-            enchant.world.x = 64 - enchant.world.bear.x;
+            enchant.world.x = enchant.world.playerPos - enchant.world.bear.x;
             //if (enchant.game.frame % 60 == 0) console.log(enchant.world.bullets);
             var fallNum = 0;
             enchant.world.enemies.forEach(function(e, j) {
@@ -146,12 +147,21 @@ enchant();
             })
             // playerとenemy
             var bear = enchant.world.bear;
-            enchant.world.enemies.forEach(function(e, i) {
+            /*enchant.world.enemies.forEach(function(e, i) {
                 if (!bear.isDamaged && bear.intersect(e)) {
                     bear.HP--;
                     bear.isDamaged = true;
+                    //break; // syntax error : illegal statement errorが出る。forEach文では使えないのか...?
                 }
-            })// ";"つけたほうがいいのかどうかわからない
+            })*/
+            enchant.world.enemies.some(function(e, i) {
+                if (!bear.isDamaged && bear.intersect(e)) {
+                    bear.HP--;
+                    bear.isDamaged = true;
+                    console.log("damaged!");
+                    return false;
+                }
+            })
         }
     });
     enchant.MapSprite = Class.create(Sprite, {// x, yは表示矩形のサイズであって位置ではないのでは...?
@@ -349,7 +359,7 @@ enchant();
             this.classname = classname;
             this.isHostile = !(this.classname == 'Player');
         },
-        update: function(x, y) {
+        update:function(x, y) {
             this.v.resize(this.speed);
             //this.moveBy(this.v.x, this.v.y);
             //this.realPos.x += this.v.x;
@@ -370,7 +380,8 @@ enchant();
         },
         isOutOfScreen:function() {
             var b = enchant.world.bear;
-            return this.x < -this.image.width + b.x || this.x > enchant.game.width + b.x// + enchant.world.bear.x
+            var p = enchant.world.playerPos;
+            return this.x < -this.image.width + b.x - p || this.x > enchant.game.width + b.x// + enchant.world.bear.x
                 || this.y < -this.image.height || this.y > enchant.game.height;
         },
         pop:function(i) {
