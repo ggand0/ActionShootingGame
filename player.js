@@ -149,7 +149,11 @@ enchant();
                         enchant.game.end(score, score + 'm縺ｧ豁ｻ縺ｫ縺ｾ縺励◆');
                     }
                 });*/
+                //nchant.game.pushScene(enchant.game.overScene);
+                enchant.game.isOvered = true;
                 this.removeEventListener('enterframe', arguments.callee);
+                //enchant.game.gameScene.overLogo.visible = true;
+                //enchant.game.gameScene.addChild(enchant.game.clearLogo);
             }
         },
         update_motion_ex:function() {// 移動とアニメーション
