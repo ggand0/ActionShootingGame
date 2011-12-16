@@ -5,7 +5,7 @@ window.onload = function() {
     enchant.game = game;
     game.fps = 24;
     game.preload('chara1.gif', 'map2.gif', 'bear.gif', 'bullet.png','map.gif', 'effect0.gif'
-    ,'gameover.png', 'clear.png', 'blast_small.wav', 'bullet.wav');
+    ,'gameover.png', 'clear.png', 'blast_small.wav', 'bullet.wav', 'bullet2.mp3');
     game.keybind(90, 'a');// Zキー
     game.keybind(88, 'b');// Xキー
     game.onload = function() {
@@ -38,20 +38,10 @@ window.onload = function() {
         apad.y = 224;
         this.gameScene.addChild(pad);
         this.gameScene.addChild(apad);
-        
-        
-        this.clearLogo = new Sprite(267, 48, game.assets['clear.png']);
-        //this.overScene.addChild(this.overLogo);
-        
-        /*this.overLogo.visible = false;
-        this.clearLogo.visible = false;
-        this.gameScene.addChild(this.clearLogo);
-        this.gameScene.addChild(this.overLogo);*/
         this.gameScene.backgroundColor = 'rgb(182, 255, 255)';
         this.pushScene(this.gameScene);
         
         this.addEventListener('enterframe', function() {
-            //console.log(this._scenes.length);
             if (this.isOvered) {
                 var overScene = new GameOver();
                 this.pushScene(overScene);

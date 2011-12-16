@@ -23,7 +23,7 @@ enchant();
             //r = Math.floor(Math.random()*2);
             switch(this.type) {
                 case 0:
-                    if (enchant.game.frame % 30 == 0) {
+                    if (enchant.game.frame % 20 == 0) {
                         var b = new Bullet(24, 24//this.x + 16, this.y + this.offset
                                 , new Vector(-1, 0), 10, this, 'Enemy');
                         enchant.world.bullets.push(b);
@@ -32,11 +32,23 @@ enchant();
                     }
                     break;
                 case 1:
-                    var s = new Vector(0, 0);
-                    s.x = Math.atan2(enchant.world.bear.x - this.x, enchant.world.bear.y - this.y);
-                    
-                    var b = new Bullet(24, 24, s, 10, this, 'Enemy');
-                    break;
+                    //if (enchant.game.frame % 20 == 0) {
+                        var s = new Vector(0, 0);
+                        var rad = Math.atan2(enchant.world.bear.x - this.x, enchant.world.bear.y - this.y);
+                        //rad = Math.PI * 2 - 90 * Math.PI / 180.0;
+                        //rad += 90 * Math.PI / 180.0;
+                        //rad = -rad + Math.PI;
+                        //rad += 270 * Math.PI / 180.0;
+                        rad += -90 * Math.PI / 180.0;
+                        rad = -rad;// + Math.PI;
+                        s.x = Math.cos(rad);
+                        s.y = Math.sin(rad);
+                        //console.log(rad * 180.0 / Math.PI);
+                        var b = new Bullet(24, 24, s, 10, this, 'Enemy');
+                        enchant.world.bullets.push(b);
+                        enchant.world.addChild(b);
+                        break;
+                    //}
             }
         },
         pop:function(i) {
@@ -68,8 +80,12 @@ enchant();
             enchant.Enemy.call(this, x, y, image, map, pos, type);
             this.HP = 2;
             this.v.x = 3;
+            /*this.addEventListener('enterframe', function() {
+            });*/
         },
         update:function() {
+            this.x += this.v.x;
+            this.y += this.v.y;
         }
     });
     enchant.Boss = Class.create(enchant.MapSprite, {
@@ -114,7 +130,7 @@ enchant();
                 var c = Vector(my.x + my.image.width/2, my.y + my.image.height/2);
                 c.sub(a);
                 var b = new Bullet(this.x + this.image.width/2, this.y + 100);
-                console.log(a.x);
+                //console.log(a.x);
                 b.v.x = c.x;
                 b.v.y = c.y;
                 enchant.world.bullets.push(b);
