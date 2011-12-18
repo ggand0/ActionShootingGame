@@ -40,7 +40,7 @@ window.onload = function() {
         var UI = new Label();
         UI.font = "12px 'Arial Balck'";
         UI.addEventListener('enterframe', function() {
-            this.text = "HP : " + enchant.world.bear.HP;
+            this.text = "HP : " + enchant.world.levels[enchant.world.levelNum].bear.HP;
         });
         UI.x = 280;
         this.gameScene.addChild(this.p);
@@ -57,8 +57,11 @@ window.onload = function() {
         this.gameScene.addChild(apad);
         this.gameScene.backgroundColor = 'rgb(182, 255, 255)';
         this.pushScene(this.gameScene);
+        enchant.level = enchant.world.levels[enchant.world.levelNum];
         
         this.addEventListener('enterframe', function() {
+            //enchant.level = enchant.world.levels[enchant.world.levelNum];     // ClearSceneÇ≈Ç‚ÇÈÇ©ÅI
+            
             if (this.isOvered) {
                 var overScene = new GameOver();
                 this.pushScene(overScene);

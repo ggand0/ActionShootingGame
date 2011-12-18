@@ -26,15 +26,15 @@ enchant();
                     if (enchant.game.frame % 20 == 0) {
                         var b = new Bullet(24, 24//this.x + 16, this.y + this.offset
                                 , new Vector(-1, 0), 10, this, 'Enemy');
-                        enchant.world.bullets.push(b);
-                        enchant.world.addChild(b);
+                        enchant.level.bullets.push(b);
+                        enchant.level.addChild(b);
                         //enchant.game.currentScene.addChild(b);
                     }
                     break;
                 case 1:
                     //if (enchant.game.frame % 20 == 0) {
                         var s = new Vector(0, 0);
-                        var rad = Math.atan2(enchant.world.bear.x - this.x, enchant.world.bear.y - this.y);
+                        var rad = Math.atan2(enchant.level.bear.x - this.x, enchant.level.bear.y - this.y);
                         //rad = Math.PI * 2 - 90 * Math.PI / 180.0;
                         //rad += 90 * Math.PI / 180.0;
                         //rad = -rad + Math.PI;
@@ -45,18 +45,18 @@ enchant();
                         s.y = Math.sin(rad);
                         //console.log(rad * 180.0 / Math.PI);
                         var b = new Bullet(24, 24, s, 10, this, 'Enemy');
-                        enchant.world.bullets.push(b);
-                        enchant.world.addChild(b);
+                        enchant.level.bullets.push(b);
+                        enchant.level.addChild(b);
                         break;
                     //}
             }
         },
         pop:function(i) {
             this.isAlive = false;
-            enchant.world.removeChild(this);
-            enchant.world.enemies.splice(i, 1);//(this, 1);
+            enchant.level.removeChild(this);
+            enchant.level.enemies.splice(i, 1);//(this, 1);
             this.removeEventListener('enterframe', arguments.callee);
-            //console.log(enchant.world.enemies.length);
+            //console.log(enchant.level.enemies.length);
             delete this;
             console.log("dead");
         }
@@ -67,7 +67,7 @@ enchant();
             this.HP = 2;
         },
         update:function() {
-            this.v.x = this.x < enchant.world.bear.x ? 3 : -3;
+            this.v.x = this.x < enchant.level.bear.x ? 3 : -3;
             this.update_motion_ex();
         },
         update_motion_ex:function() {
@@ -121,11 +121,11 @@ enchant();
                     b.v.x = vec.x
                     b.v.y = vec.y;
                     b.rotate(i*15);
-                    enchant.world.bullets.push(b);
+                    enchant.level.bullets.push(b);
                     enchant.game.currentScene.addChild(b);
                 }
             } else {
-                var my = enchant.world.player;
+                var my = enchant.level.player;
                 var a = Vector(this.x + this.image.width/2, this.y + this.image.height/2);
                 var c = Vector(my.x + my.image.width/2, my.y + my.image.height/2);
                 c.sub(a);
@@ -133,7 +133,7 @@ enchant();
                 //console.log(a.x);
                 b.v.x = c.x;
                 b.v.y = c.y;
-                enchant.world.bullets.push(b);
+                enchant.level.bullets.push(b);
                 enchant.game.currentScene.addChild(b);
             }
         }

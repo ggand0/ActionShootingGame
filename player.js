@@ -23,11 +23,11 @@ enchant();
             
             enchant.game.addEventListener('abuttonhasbeendown', function() {
                 if (enchant.game.input.up) {
-                    enchant.world.bear.shot(1, 1);
+                    enchant.level.bear.shot(1, 1);
                 } else if (enchant.game.input.down) {
-                    enchant.world.bear.shot(1, 2);
+                    enchant.level.bear.shot(1, 2);
                 } else {
-                    enchant.world.bear.shot(1, 0);
+                    enchant.level.bear.shot(1, 0);
                 }
             });
             enchant.game.addEventListener('startbuttonhasbeendown', function() {
@@ -54,8 +54,8 @@ enchant();
             switch (type) {
                 case 0:
                     var b = new Bullet(24, 24, new Vector(1, 0), 20, this, 'Player');
-                    enchant.world.bullets.push(b);
-                    enchant.world.addChild(b);
+                    enchant.level.bullets.push(b);
+                    enchant.level.addChild(b);
                     break;
                 case 1:
                     var speed = 5;	// 個々のbulletのスピード
@@ -89,8 +89,8 @@ enchant();
                         var vx = Math.cos(rotation) * speed;
                         var vy = Math.sin(rotation) * speed;
                         var b = new Bullet(24, 24, new Vector(vx, vy), 20, this, 'Player');
-                        enchant.world.bullets.push(b);
-                        enchant.world.addChild(b);
+                        enchant.level.bullets.push(b);
+                        enchant.level.addChild(b);
                     }
                     break;
             }

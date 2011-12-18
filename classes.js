@@ -23,11 +23,18 @@ enchant();
     enchant.MapSprite = Class.create(Sprite, {// x, yは表示矩形のサイズであって位置ではない
         initialize:function(x, y, image){
             Sprite.call(this, x, y);
+            //console.log(enchant.world);
+            //enchant.level = enchant.world.levels[enchant.world.levelNum];// コンストラクタ内だからundefinedってことか...!!
             this.image = image;
             this.x = x;
             this.y = y;
             this.v = new Vector(0, 0);
+            /*this.addEventListener('load', function() {//'enter' 'load'
+                console.log("enter");
+                enchant.level = enchant.world.levels[enchant.world.levelNum];
+            });*/
             this.addEventListener('enterframe', function(){
+                //if (enchant.level == undefined) enchant.level = enchant.world.levels[enchant.world.levelNum];
                 this.update();
             });
             // デバッグ用
@@ -44,7 +51,7 @@ enchant();
                 || this.y < -this.image.height || this.y > enchant.game.height;
         },
         pop:function(){
-            enchant.world.removeChild(this);
+            enchant.level.removeChild(this);
         }
     });
     enchant.Effect = Class.create(Sprite, {
@@ -73,7 +80,7 @@ enchant();
         },
         pop:function() {
             console.log(this.frame);
-            enchant.world.removeChild(this);
+            enchant.level.removeChild(this);
             this.removeEventListener('enterframe', arguments.callee);
         }
     });
@@ -93,7 +100,7 @@ enchant();
         shot: function(){
             var b = new Bullet(this.x + this.image.width/2, this.y + this.offset
                 , new Vector(0, -1), 10);
-            enchant.world.bullets.push(b);
+            enchant.level.bullets.push(b);
             enchant.game.currentScene.addChild(b);
         },
         update:function(){
@@ -207,6 +214,7 @@ enchant();
             });*/
         },
         update:function(x, y) {
+            //console.log("bul");
             this.v.resize(this.speed);
             //console.log(this.v.x);
             this.x += this.v.x;
@@ -215,20 +223,20 @@ enchant();
             
             if (this.isOutOfScreen()) {
                 //console.log("bullet removed");
-                enchant.world.removeChild(this);
-                enchant.world.bullets.splice(this, 1);
+                enchant.level.removeChild(this);
+                enchant.level.bullets.splice(this, 1);
                 this.removeEventListener('enterframe', arguments.callee);
             }
         },/**/ // コメントアウトしたら動いた
         isOutOfScreen:function() {
-            var b = enchant.world.bear;
-            var p = enchant.world.playerPos;
-            return this.x < -this.image.width + b.x - p || this.x > enchant.game.width + b.x// + enchant.world.bear.x
+            var b = enchant.level.bear;
+            var p = enchant.level.playerPos;
+            return this.x < -this.image.width + b.x - p || this.x > enchant.game.width + b.x// + enchant.level.bear.x
                 || this.y < -this.image.height || this.y > enchant.game.height;
         },
         pop:function(i) {
-            enchant.world.removeChild(this);
-            enchant.world.bullets.splice(i, 1);//(this, 1);
+            enchant.level.removeChild(this);
+            enchant.level.bullets.splice(i, 1);//(this, 1);
             this.removeEventListener('enterframe', arguments.callee);
         }
     });
