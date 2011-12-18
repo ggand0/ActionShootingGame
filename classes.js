@@ -195,6 +195,7 @@ enchant();
             MapSprite.call(this, x, y, enchant.game.assets['bullet.png']);
             this.v = bulDir;
             //console.log(this.v.x);
+            this.speed = bulSpeed;// bulletが動かないバグはこの１行のせいでした本当に(ry
             this.user = user;
             this.x = user.x + 16;
             this.y = user.y + 16;
@@ -205,7 +206,7 @@ enchant();
                 this.update();
             });*/
         },
-        update:function() {
+        update:function(x, y) {
             this.v.resize(this.speed);
             //console.log(this.v.x);
             this.x += this.v.x;
@@ -213,7 +214,7 @@ enchant();
             //console.log(this.x);// NaN...!?
             
             if (this.isOutOfScreen()) {
-                console.log("bullet removed");
+                //console.log("bullet removed");
                 enchant.world.removeChild(this);
                 enchant.world.bullets.splice(this, 1);
                 this.removeEventListener('enterframe', arguments.callee);

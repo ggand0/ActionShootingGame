@@ -30,6 +30,18 @@ enchant();
                     enchant.world.bear.shot(1, 0);
                 }
             });
+            enchant.game.addEventListener('startbuttonhasbeendown', function() {
+                if (!enchant.game.isPaused) {
+                    enchant.game.isPaused = true;
+                    enchant.game.p.text = "PAUSED";
+                    enchant.game.pause();
+                   
+                } else {
+                    enchant.Game.start();
+                    enchant.game.p.text = "";
+                    enchant.game.isPaused = false;
+                }
+            });
             this.addEventListener('abuttonhasbeendown', function() {
                 this.shot(1);
             });

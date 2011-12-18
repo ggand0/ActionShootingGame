@@ -8,14 +8,30 @@ window.onload = function() {
     ,'gameover.png', 'clear.png', 'blast_small.wav', 'bullet.wav', 'bullet2.mp3');
     game.keybind(90, 'a');// Zキー
     game.keybind(88, 'b');// Xキー
+    game.keybind(80, 'start');// Xキー
     game.onload = function() {
         this.isOvered = false;
         this.isCleared = false;
+        this.isPaused = false;
         this.gameScene = new Scene();
         enchant.world = new World();
         this.gameScene.addChild(enchant.world);
 
         enchant.game.score = 0;
+        this.p = new Label();
+        this.p.font = "12px 'Arial Black'";  
+        this.p.x = 160;
+        this.p.y = 160; 
+        this.p.text = "";
+        /*pause.addEventListener('enterframe', function() {
+            if (enchant.game.isPaused) {
+                this.text = "PAUSED";
+                console.log("p");
+            } else {
+                this.text = "";
+            }
+        });*/
+
         var score = new Label();
         score.font = "12px 'Arial Black'";                      
         score.addEventListener('enterframe', function() {
@@ -27,6 +43,7 @@ window.onload = function() {
             this.text = "HP : " + enchant.world.bear.HP;
         });
         UI.x = 280;
+        this.gameScene.addChild(this.p);
         this.gameScene.addChild(score);
         this.gameScene.addChild(UI);
 
