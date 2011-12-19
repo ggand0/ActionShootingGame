@@ -12,7 +12,7 @@ enchant();
             this.timer = new Timer(120);
             this.timer.play();
             this.backgroundColor = 'rgb(182, 255, 255)';
-            
+            this.curNum = enchant.world.levelNum;
             this.addEventListener('enterframe', function() {
                 this.update();
             });
@@ -21,7 +21,8 @@ enchant();
             if (this.timer.isOver()) {
                 enchant.game.popScene();
                 enchant.game.popScene();
-                enchant.game.onload();
+                //enchant.game.onload();
+                enchant.game.ini(this.curNum);
             }
             
             this.timer.count();
@@ -39,16 +40,22 @@ enchant();
             this.timer = new Timer(120);
             this.timer.play();
             this.backgroundColor = 'rgb(182, 255, 255)';
-            
+            this.curNum = enchant.world.levelNum;
             this.addEventListener('enterframe', function() {
                 this.update();
             });
         },
         update:function() {
             if (this.timer.isOver()) {
+                console.log("cls over");
                 enchant.game.popScene();
                 enchant.game.popScene();
-                enchant.game.onload();
+                //enchant.game.onload(1);//++enchant.world.levelNum);
+                //enchant.world = new World();
+                //enchant.world.levelNum = this.curNum;
+                enchant.game.ini(this.curNum+1);
+                //enchant.world.levelNum = this.curNum+1;
+                enchant.level = enchant.world.levels[enchant.world.levelNum];
             }
             
             this.timer.count();

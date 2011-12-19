@@ -21,6 +21,8 @@ enchant();
         },
         shot:function() {
             //r = Math.floor(Math.random()*2);
+            if (Math.abs(this.x, enchant.level.x) > 320) return;
+            
             switch(this.type) {
                 case 0:
                     if (enchant.game.frame % 20 == 0) {

@@ -12,7 +12,10 @@
             this.levelNum = 0;
             this.levels = new Array();
             this.levels.push(new Level1());
-            enchant.game.gameScene.addChild(this.levels[this.levelNum]);
+            this.levels.push(new Level2());
+            this.levels.push(new Level3());
+            //enchant.game.gameScene.addChild(this.levels[this.levelNum]);
+            //this.addChild(this.levels[this.levelNum]);
         },
         update:function() {
             var n = enchant.world.levelNum;
