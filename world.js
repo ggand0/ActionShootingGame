@@ -12,12 +12,14 @@
             this.levelNum = 0;
             this.levels = new Array();
             this.levels.push(new Level1());
-            this.levels.push(new Level2());
-            this.levels.push(new Level3());
+            //this.levels.push(new Level2());
+            //this.levels.push(new Level3());
+            
             //enchant.game.gameScene.addChild(this.levels[this.levelNum]);
             //this.addChild(this.levels[this.levelNum]);
         },
         update:function() {
+            if (enchant.level.bullets.length > 0) console.log(enchant.level.bullets.length);
             this.collide();
             enchant.level.x = enchant.world.playerPos - enchant.level.bear.x;
             enchant.level.enemies.forEach(function(e, j) {

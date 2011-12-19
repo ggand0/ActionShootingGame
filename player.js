@@ -17,10 +17,9 @@ enchant();
             this.bullet_se = enchant.Sound.load('bullet.wav', 'audio/wav');
             this.bullet_se.volume = 0.3;
             this.timer = new Timer(30);// ダメージ後の無敵時間にセット
-            this.addEventListener('abuttonup', function() {
+            /*this.addEventListener('abuttonup', function() {
                 this.shot(1);
-            });
-            
+            });*/
             enchant.game.addEventListener('abuttonhasbeendown', function() {
                 if (enchant.game.input.up) {
                     enchant.level.bear.shot(1, 1);
@@ -42,11 +41,13 @@ enchant();
                     enchant.game.isPaused = false;
                 }
             });
-            this.addEventListener('abuttonhasbeendown', function() {
+            /*this.addEventListener('abuttonhasbeendown', function() {
                 this.shot(1);
-            });
+            });*/
+            this.ses = new Array();
         },
         shot: function(type, dir) {
+            console.log("shot");// 3回呼ばれている！？
             var se = enchant.Sound.load('bullet2.mp3', 'audio/wav');
             se.volume = 0.1;
             se.play();
@@ -118,7 +119,7 @@ enchant();
             if (this.y > enchant.game.height) {
                 var score = Math.round(this.x);//bear.x);
                 this.frame = 3;
-                this.v.y = -20;
+                this.v.y = -0;
                 /*this.addEventListener('enterframe', function() {
                     this.v.y += 2;
                     this.y += Math.min(Math.max(this.v.y, -10), 10);
@@ -135,14 +136,14 @@ enchant();
             this.frame = 0;
             this.frameCount++;
             if (!this.isDamaged) {
-                if (enchant.game.input.left) this.v.x = -4;
+                if (enchant.game.input.left) this.v.x = -4;//-6;
                 if (enchant.game.input.right) this.v.x = 4;
                 if (this.jumping) {
                 if (!enchant.game.input.b) {
                 }
                 } else {
                     if (enchant.game.input.b) {
-                        this.v.y = -20;
+                        this.v.y = -20;//-40;//-20;
                     }
                 }
             }

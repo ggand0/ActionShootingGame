@@ -64,21 +64,22 @@ enchant();
         initialize:function(x, y, image, map, pos, type) {
             enchant.Enemy.call(this, x, y, image, map, pos, type);
             this.HP = 2;
-            if (type == 0) isActive = true;// t0 : 前から追跡するタイプ
-            else {
+            if (type == 0) {
+                isActive = true;// t0 : 前から追跡するタイプ
+            } else {
                 isActive = false;
                 this.visible = false;
             }
         },
         update:function() {
-            var distance = this.x - enchant.level.bear.x; // Math.abs()
+            var distance = this.x - enchant.level.bear.x;// Math.abs()
             // Playerが初期位置を超えてから追跡させたい
-            if (this.type == 1 && distance < -320) {
+            if (!this.isActive && this.type == 1 && distance < -320) {
                 console.log("chaseEnemy's become active");
                 this.isActive = true;
                 this.visible = true;
             }
-            if (this.isActive) {
+            if (this.isActive && this.visible) {
                 this.v.x = this.x < enchant.level.bear.x ? 3 : -3;
                 this.update_motion_ex();
             }
@@ -100,7 +101,8 @@ enchant();
             var distance = this.x - enchant.level.bear.x;
             
             //if (this.type == 1 && distance < -320 || this.type == 0) {
-            if (distance < -320) {
+            if (!this.isActive && distance < -320) {
+                console.log("charge enemy's become active");
                 this.isActive = true;
                 this.visible = true;
             }

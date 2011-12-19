@@ -28,13 +28,14 @@ enchant();
             this.x = x;
             this.y = y;
             this.v = new Vector(0, 0);
-            /*this.addEventListener('load', function() {//'enter' 'load'
+            this.addEventListener('load', function() {//'enter' 'load'
                 console.log("enter");
                 enchant.level = enchant.world.levels[enchant.world.levelNum];
-            });*/
+            });/**/
             this.addEventListener('enterframe', function(){
                 //if (enchant.level == undefined) enchant.level = enchant.world.levels[enchant.world.levelNum];
                 this.update();
+                //this.update();// 苦肉の策
             });
             // デバッグ用
             this.addEventListener('touchstart', function() {
@@ -92,9 +93,9 @@ enchant();
             this.offset = -30;
             this.HP = 0;
             this.isAlive = true;
-            this.addEventListener('enterframe', function(){
+            /*this.addEventListener('enterframe', function(){
                 this.update();
-            });
+            });*/
         },
         shot: function(){
             var b = new Bullet(this.x + this.image.width/2, this.y + this.offset
@@ -137,14 +138,14 @@ enchant();
             
             // 最大速度を超えたら制限する
             this.v.x = Math.min(Math.max(this.v.x, -10), 10);
-            this.v.y = Math.min(Math.max(this.v.y, -10), 10);
+            this.v.y = Math.min(Math.max(this.v.y, -12), 10);
             
             var dest = new Rectangle(
                 this.x + this.v.x + 5, this.y + this.v.y + 2,
                 this.width-10, this.height-2
             );
             this.jumping = true;
-
+            
             // サンプルの当たり判定そのまま。すり抜ける場合が多いので可能なら書き換えたい
             while (true) {
                 var boundary, crossing;
