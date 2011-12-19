@@ -16,31 +16,38 @@ enchant();
             this.map = map;
             this.bullet_se = enchant.Sound.load('bullet.wav', 'audio/wav');
             this.bullet_se.volume = 0.3;
-            this.timer = new Timer(30);// ダメージ後の無敵時間にセット
-            /*this.addEventListener('abuttonup', function() {
+            this.timer = new Timer(15);// ダメージ後の無敵時間にセット 30
+            //this.bulTimer = new Timer(10);// SEが重過ぎるので連打制限用
+            //this.bulTimer.play();
+            this.addEventListener('abuttonup', function() {
                 this.shot(1);
-            });*/
-            enchant.game.addEventListener('abuttonhasbeendown', function() {
-                if (enchant.game.input.up) {
-                    enchant.level.bear.shot(1, 1);
-                } else if (enchant.game.input.down) {
-                    enchant.level.bear.shot(1, 2);
-                } else {
-                    enchant.level.bear.shot(1, 0);
-                }
-            });
-            enchant.game.addEventListener('startbuttonhasbeendown', function() {
-                if (!enchant.game.isPaused) {
-                    enchant.game.isPaused = true;
-                    enchant.game.p.text = "PAUSED";
-                    enchant.game.pause();
-                   
-                } else {
-                    enchant.Game.start();
-                    enchant.game.p.text = "";
-                    enchant.game.isPaused = false;
-                }
-            });
+            });/**/
+            // gameに毎回追加してたせいだな...
+            if (enchant.game.levelNum == 0 && !enchant.game.iniedPlayer) {
+                enchant.game.addEventListener('abuttonhasbeendown', function() {
+                    //if (enchant.level.bear.bulTimer.isOver()) {
+                        if (enchant.game.input.up) {
+                            enchant.level.bear.shot(1, 1);
+                        } else if (enchant.game.input.down) {
+                            enchant.level.bear.shot(1, 2);
+                        } else {
+                            enchant.level.bear.shot(1, 0);
+                        }
+                });
+                enchant.game.addEventListener('startbuttonhasbeendown', function() {
+                    if (!enchant.game.isPaused) {
+                        enchant.game.isPaused = true;
+                        enchant.game.p.text = "PAUSED";
+                        enchant.game.pause();
+                       
+                    } else {
+                        enchant.Game.start();
+                        enchant.game.p.text = "";
+                        enchant.game.isPaused = false;
+                    }
+                });
+                enchant.game.iniedPlayer = true;// gameOver時にも追加されてしまうので仕方なく
+            }
             /*this.addEventListener('abuttonhasbeendown', function() {
                 this.shot(1);
             });*/
@@ -48,9 +55,11 @@ enchant();
         },
         shot: function(type, dir) {
             console.log("shot");// 3回呼ばれている！？
-            var se = enchant.Sound.load('bullet2.mp3', 'audio/wav');
+            var se = enchant.Sound.load('bullet2.mp3', 'audio/mp3');
             se.volume = 0.1;
             se.play();
+            //this.bulTimer.set(10);
+            //this.bulTimer.play();
             
             switch (type) {
                 case 0:
@@ -99,10 +108,11 @@ enchant();
             this.damage_detection();
 
             this.timer.count();
+            //this.bulTimer.count();
         },
         damage_detection:function() {// ダメージ判定、死亡判定
             if (this.isDamaged && !this.iniTimer) {
-                this.timer.set(30);
+                this.timer.set(15);
                 this.timer.play();
                 this.iniTimer = true;
                 this.v = this.scaleX > 0 ? new Vector(-7, -7) : new Vector(7, -7);// ダメージ時の反動
@@ -136,8 +146,8 @@ enchant();
             this.frame = 0;
             this.frameCount++;
             if (!this.isDamaged) {
-                if (enchant.game.input.left) this.v.x = -4;//-6;
-                if (enchant.game.input.right) this.v.x = 4;
+                if (enchant.game.input.left) this.v.x = -7;//-6;
+                if (enchant.game.input.right) this.v.x = 7;
                 if (this.jumping) {
                 if (!enchant.game.input.b) {
                 }
@@ -151,7 +161,7 @@ enchant();
             // アニメーション：enchant.game.frameだと何故か動かない
             if (!this.isDamaged) {
                 if (this.v.x != 0) {
-                    if (this.frameCount % 4 == 0) {
+                    if (this.frameCount % 3 == 0) {
                         this.pose++;
                         this.pose %= 2;// 0, 1にする
                     }

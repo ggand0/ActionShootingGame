@@ -110,35 +110,35 @@ enchant();
         },
         update_motion:function(){
             var friction = 0;
-            if (this.v.x > 0.3) {
-                friction = -0.3;
+            if (this.v.x > 0.6) {//0.3
+                friction = -0.6;
             } else if (this.v.x > 0) {
                 friction = -this.v.x;
             }
-            if (this.v.x < -0.3) {
-                friction = 0.3;
+            if (this.v.x < -0.6) {
+                friction = 0.6;
             } else if (this.v.x < 0) {
                 friction = -this.v.x;
             }
-            friction = 0.40;
+            friction = 0.80;//0.40;
             
             // ブレーキング
             if (this.v.x > 0) {
-                this.v.x += -(.60 * friction);
+                this.v.x += -(1.2 * friction);//.60
                 if (this.v.x < 0) this.v.x = 0;
             }
             if (this.v.x < 0) {
-                this.v.x += (.60 * friction)
+                this.v.x += (1.2 * friction)
                 if (this.v.x > 0) this.v.x = 0;
             }
             if (this.v.x > 0) this.scaleX = 1;
             if (this.v.x < 0) this.scaleX = -1;
             
-            this.v.y += /*this.ay + */0.60;
+            this.v.y += /*this.ay + */1.60;//0.60;
             
             // 最大速度を超えたら制限する
             this.v.x = Math.min(Math.max(this.v.x, -10), 10);
-            this.v.y = Math.min(Math.max(this.v.y, -12), 10);
+            this.v.y = Math.min(Math.max(this.v.y, -20), 10);
             
             var dest = new Rectangle(
                 this.x + this.v.x + 5, this.y + this.v.y + 2,

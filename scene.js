@@ -24,7 +24,7 @@ enchant();
                     enchant.game.popScene();
                     //enchant.game.onload();
                     enchant.game.ini(this.curNum);
-                    enchant.level = enchant.world.levels[enchant.world.levelNum];// 入れないとスクロールされない...?
+                    enchant.level = enchant.world.levels[0];//[enchant.world.levelNum];// 入れないとスクロールされない...?
                 }
             }
             
@@ -59,7 +59,7 @@ enchant();
                     //enchant.world.levelNum = this.curNum;
                     enchant.game.ini(this.curNum+1);
                     //enchant.world.levelNum = this.curNum+1;
-                    enchant.level = enchant.world.levels[enchant.world.levelNum];
+                    enchant.level = enchant.world.levels[0];//enchant.world.levelNum];
                 }
             }
             

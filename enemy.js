@@ -80,12 +80,12 @@ enchant();
                 this.visible = true;
             }
             if (this.isActive && this.visible) {
-                this.v.x = this.x < enchant.level.bear.x ? 3 : -3;
+                this.v.x = this.x < enchant.level.bear.x ? 6 : -6;//3
                 this.update_motion_ex();
             }
         },
         update_motion_ex:function() {
-            if (enchant.game.frame % 60 == 0) this.v.y = -20;
+            if (enchant.game.frame % 60 == 0) this.v.y = -17;
             this.update_motion();
         }
     });
@@ -93,7 +93,7 @@ enchant();
         initialize:function(x, y, image, map, pos, type) {
             enchant.Enemy.call(this, x, y, image, map, pos, type);
             this.HP = 2;
-            this.v.x = 3;
+            this.v.x = 7;
             this.isActive = false;
             this.visible = false;
         },

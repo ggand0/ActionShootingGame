@@ -2,24 +2,31 @@
 
 (function() {*/
     enchant.World = Class.create(Group, {
-        initialize:function(){
+        initialize:function(lvl){
             Group.call(this);
             this.addEventListener('enterframe', function() {
                 this.update();
             });
             this.playerPos = 90;//64
             this.clearPos = 3100;
-            this.levelNum = 0;
+            this.levelNum = lvl;
             this.levels = new Array();
-            this.levels.push(new Level1());
-            //this.levels.push(new Level2());
-            //this.levels.push(new Level3());
-            
+            switch (lvl) {
+                case 0:
+                    this.levels.push(new Level1());
+                    break;
+                case 1:
+                    this.levels.push(new Level2());
+                    break;
+                case 2:
+                    this.levels.push(new Level3());
+                    break;
+            }
             //enchant.game.gameScene.addChild(this.levels[this.levelNum]);
             //this.addChild(this.levels[this.levelNum]);
         },
         update:function() {
-            if (enchant.level.bullets.length > 0) console.log(enchant.level.bullets.length);
+            //if (enchant.level.bullets.length > 0) console.log(enchant.level.bullets.length);
             this.collide();
             enchant.level.x = enchant.world.playerPos - enchant.level.bear.x;
             enchant.level.enemies.forEach(function(e, j) {
