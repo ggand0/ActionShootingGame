@@ -18,36 +18,31 @@
             //this.addChild(this.levels[this.levelNum]);
         },
         update:function() {
-            var n = enchant.world.levelNum;
             this.collide();
             enchant.level.x = enchant.world.playerPos - enchant.level.bear.x;
-            var fallNum = 0;
             enchant.level.enemies.forEach(function(e, j) {
                 if (e.y > enchant.game.height && e.isAlive) {
                     e.pop(j);
-                    fallNum++;
                 }
             });
-            //if (fallNum > 0) console.log(fallNum);
             //if (enchant.world.bullets.length > 0) console.log(enchant.world.bullets[0].v.x);
             if (enchant.level.bear.x > enchant.world.clearPos) {
                 enchant.game.isCleared = true;
             }
         },
         collide:function() {
-            var n = enchant.world.levelNum;
                 // character‚Æbullet
                 enchant.level.bullets.forEach(function(b, i) {
                     var ishit = false;
-                    if (b.isHostile) {// “G‘®«‚È‚ç
+                    if (b.isHostile) {// bullet‚ª“G‘®«‚È‚ç
                         ishit = enchant.level.bear.intersect(b);
                         if (ishit) {
                             enchant.level.bear.HP--;
                             b.pop(i);
                         }
-                    } else {
+                    } else {// –¡•û‘®«‚È‚ç
                         enchant.level.enemies.forEach(function(e, j) {
-                            //if (e.isAlive) {
+                            if (e.isActive) {
                                 ishit = e.intersect(b);
                                 if (ishit) {
                                     console.log("hit");
@@ -61,17 +56,20 @@
                                         e.pop(j);
                                     }
                                 }
+                            }
                         })
                     }
                 })
                 // player‚Æenemy
                 var bear = enchant.level.bear;
                 enchant.level.enemies.some(function(e, i) {
-                    if (!bear.isDamaged && bear.intersect(e)) {
-                        bear.HP--;
-                        bear.isDamaged = true;
-                        console.log("damaged!");
-                        return false;
+                    if (e.isActive) {
+                        if (!bear.isDamaged && bear.intersect(e)) {
+                            bear.HP--;
+                            bear.isDamaged = true;
+                            console.log("damaged!");
+                            return false;
+                        }
                     }
                 })
             }

@@ -23,7 +23,6 @@ enchant();
     enchant.MapSprite = Class.create(Sprite, {// x, yは表示矩形のサイズであって位置ではない
         initialize:function(x, y, image){
             Sprite.call(this, x, y);
-            //console.log(enchant.world);
             //enchant.level = enchant.world.levels[enchant.world.levelNum];// コンストラクタ内だからundefinedってことか...!!
             this.image = image;
             this.x = x;
@@ -146,6 +145,7 @@ enchant();
             );
             this.jumping = true;
 
+            // サンプルの当たり判定そのまま。すり抜ける場合が多いので可能なら書き換えたい
             while (true) {
                 var boundary, crossing;
                 var dx = dest.x - this.x - 5;

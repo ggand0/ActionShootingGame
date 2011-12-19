@@ -9,6 +9,7 @@ window.onload = function() {
     game.keybind(90, 'a');// Zキー
     game.keybind(88, 'b');// Xキー
     game.keybind(80, 'start');// Xキー
+    game.maxLevel = 2;
     game.onload = function() {
         this.isOvered = false;
         this.isCleared = false;

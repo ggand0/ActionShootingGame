@@ -6,10 +6,10 @@ enchant();
             Character.call(this, x, y, image, map);
             this.HP = 3;
             this.v.x = -3;
-            //this.x = 100;
             this.type = type;
             this.x = pos.x;
             this.y = pos.y;//this.pos = pos;
+            this.isActive = true;
         },
         update:function() {
             this.update_motion();
@@ -17,10 +17,8 @@ enchant();
             if (r == 0) {
               this.shot();
             }
-            //if (this.y > enchant.game.height) this.pop();
         },
         shot:function() {
-            //r = Math.floor(Math.random()*2);
             if (Math.abs(this.x, enchant.level.x) > 320) return;
             
             switch(this.type) {
@@ -30,11 +28,10 @@ enchant();
                                 , new Vector(-1, 0), 10, this, 'Enemy');
                         enchant.level.bullets.push(b);
                         enchant.level.addChild(b);
-                        //enchant.game.currentScene.addChild(b);
                     }
                     break;
                 case 1:
-                    //if (enchant.game.frame % 20 == 0) {
+                    if (enchant.game.frame % 20 == 0) {
                         var s = new Vector(0, 0);
                         var rad = Math.atan2(enchant.level.bear.x - this.x, enchant.level.bear.y - this.y);
                         //rad = Math.PI * 2 - 90 * Math.PI / 180.0;
@@ -50,7 +47,7 @@ enchant();
                         enchant.level.bullets.push(b);
                         enchant.level.addChild(b);
                         break;
-                    //}
+                    }
             }
         },
         pop:function(i) {
@@ -67,10 +64,24 @@ enchant();
         initialize:function(x, y, image, map, pos, type) {
             enchant.Enemy.call(this, x, y, image, map, pos, type);
             this.HP = 2;
+            if (type == 0) isActive = true;// t0 : 前から追跡するタイプ
+            else {
+                isActive = false;
+                this.visible = false;
+            }
         },
         update:function() {
-            this.v.x = this.x < enchant.level.bear.x ? 3 : -3;
-            this.update_motion_ex();
+            var distance = this.x - enchant.level.bear.x; // Math.abs()
+            // Playerが初期位置を超えてから追跡させたい
+            if (this.type == 1 && distance < -320) {
+                console.log("chaseEnemy's become active");
+                this.isActive = true;
+                this.visible = true;
+            }
+            if (this.isActive) {
+                this.v.x = this.x < enchant.level.bear.x ? 3 : -3;
+                this.update_motion_ex();
+            }
         },
         update_motion_ex:function() {
             if (enchant.game.frame % 60 == 0) this.v.y = -20;
@@ -82,12 +93,21 @@ enchant();
             enchant.Enemy.call(this, x, y, image, map, pos, type);
             this.HP = 2;
             this.v.x = 3;
-            /*this.addEventListener('enterframe', function() {
-            });*/
+            this.isActive = false;
+            this.visible = false;
         },
         update:function() {
-            this.x += this.v.x;
-            this.y += this.v.y;
+            var distance = this.x - enchant.level.bear.x;
+            
+            //if (this.type == 1 && distance < -320 || this.type == 0) {
+            if (distance < -320) {
+                this.isActive = true;
+                this.visible = true;
+            }
+            if (this.isActive) {
+                this.x += this.v.x;
+                this.y += this.v.y;
+            }
         }
     });
     enchant.Boss = Class.create(enchant.MapSprite, {

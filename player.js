@@ -17,7 +17,7 @@ enchant();
             this.bullet_se = enchant.Sound.load('bullet.wav', 'audio/wav');
             this.bullet_se.volume = 0.3;
             this.timer = new Timer(30);// ダメージ後の無敵時間にセット
-            this.addEventListener('abuttonup', function() {// konai
+            this.addEventListener('abuttonup', function() {
                 this.shot(1);
             });
             
@@ -58,8 +58,8 @@ enchant();
                     enchant.level.addChild(b);
                     break;
                 case 1:
-                    var speed = 5;	// 個々のbulletのスピード
-                    var width = 30;     // 射撃するbulletsの幅(degree)
+                    var speed = 5;	                        // 個々のbulletのスピード
+                    var width = 30;                             // 射撃するbulletsの幅(degree)
                     var rad = 0;
                     switch (dir) {
                         case 0:
@@ -75,17 +75,15 @@ enchant();
                             else rad = Math.atan2((this.y + 160) - this.y, this.x - 160 - this.x);
                             break;
                     }
-                    
-                    
-                    var rotation = 0.0;                 // 最終的な個々のbulletに与える角度(radian)
+                    var rotation = 0.0;                         // 最終的な個々のbulletに与える角度(radian)
 
                     // 角度の割り振り
                     for (i = 0; i < 5; i++) {
-                        var tmp = (4 - i) / 4.0;        // 0.0～1.0に丸める
-                        tmp -= .5;	                // -0.5～0.5にする
+                        var tmp = (4 - i) / 4.0;                // 0.0～1.0に丸める
+                        tmp -= .5;	                        // -0.5～0.5にする
                         //console.log(tmp);
-                        var rot = tmp * width;	        // 角度を求める
-                        rotation = rad + rot * Math.PI / 180.0
+                        var rot = tmp * width;	                // 角度を求める
+                        rotation = rad + rot * Math.PI / 180.0;
                         var vx = Math.cos(rotation) * speed;
                         var vy = Math.sin(rotation) * speed;
                         var b = new Bullet(24, 24, new Vector(vx, vy), 20, this, 'Player');
@@ -136,8 +134,6 @@ enchant();
             // 移動とアニメーション
             this.frame = 0;
             this.frameCount++;
-            //console.log(enchant.game.frame);
-            //console.log(this.d);
             if (!this.isDamaged) {
                 if (enchant.game.input.left) this.v.x = -4;
                 if (enchant.game.input.right) this.v.x = 4;

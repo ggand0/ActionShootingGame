@@ -5,7 +5,7 @@ enchant();
         initialize:function() {
             enchant.Scene.call(this);
             var o = new Sprite(189, 97, enchant.game.assets['gameover.png']);
-            o.image = enchant.game.assets['gameover.png'];// ここでようやく入るという...
+            o.image = enchant.game.assets['gameover.png'];// imageが何故かコンストラクタで入らずここでようやく入る
             o.x = 160 - 189 / 2;
             o.y = 160 - 89 / 2;
             this.addChild(o);
@@ -19,10 +19,13 @@ enchant();
         },
         update:function() {
             if (this.timer.isOver()) {
-                enchant.game.popScene();
-                enchant.game.popScene();
-                //enchant.game.onload();
-                enchant.game.ini(this.curNum);
+                if (this.curNum < enchant.game.maxLevel) {
+                    enchant.game.popScene();
+                    enchant.game.popScene();
+                    //enchant.game.onload();
+                    enchant.game.ini(this.curNum);
+                    enchant.level = enchant.world.levels[enchant.world.levelNum];// 入れないとスクロールされない...?
+                }
             }
             
             this.timer.count();
@@ -47,15 +50,17 @@ enchant();
         },
         update:function() {
             if (this.timer.isOver()) {
-                console.log("cls over");
-                enchant.game.popScene();
-                enchant.game.popScene();
-                //enchant.game.onload(1);//++enchant.world.levelNum);
-                //enchant.world = new World();
-                //enchant.world.levelNum = this.curNum;
-                enchant.game.ini(this.curNum+1);
-                //enchant.world.levelNum = this.curNum+1;
-                enchant.level = enchant.world.levels[enchant.world.levelNum];
+                if (this.curNum < enchant.game.maxLevel) {
+                    console.log("cls over");
+                    enchant.game.popScene();
+                    enchant.game.popScene();
+                    //enchant.game.onload(1);//++enchant.world.levelNum);
+                    //enchant.world = new World();
+                    //enchant.world.levelNum = this.curNum;
+                    enchant.game.ini(this.curNum+1);
+                    //enchant.world.levelNum = this.curNum+1;
+                    enchant.level = enchant.world.levels[enchant.world.levelNum];
+                }
             }
             
             this.timer.count();
