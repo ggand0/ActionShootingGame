@@ -10,6 +10,7 @@
             this.playerPos = 90;//64
             this.clearPos = 3100;
             this.levelNum = lvl;
+            this.deadNum = 0;
             this.levels = new Array();
             switch (lvl) {
                 case 0:
@@ -60,6 +61,7 @@
                                     b.pop();
                                     if (e.HP <= 0) {
                                         enchant.game.score += 500;
+                                        this.deadNum++;
                                         var ef = new Effect(16, 16, enchant.game.assets['effect0.gif'], 5, new Vector(e.x, e.y));
                                         enchant.level.addChild(ef);
                                         e.pop(j);

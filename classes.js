@@ -67,9 +67,11 @@ enchant();
                 this.update();
             });
             // 音もついでに
-            this.se = enchant.Sound.load('blast_small.wav', 'audio/wav');
-            this.se.volume = 0.1;
-            this.se.play();
+            if (enchant.world.deadNum % 3 == 0) {// SE重すぎるのでここも削減
+                this.se = enchant.Sound.load('blast_small.wav', 'audio/wav');
+                this.se.volume = 0.1;
+                this.se.play();
+            }
         },
         update:function() {
             if (this.count > 0 && this.frame <  this.frameNum-1) this.frame++;

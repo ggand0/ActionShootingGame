@@ -4,15 +4,17 @@ window.onload = function() {
     var game = new Game(320, 320);
     enchant.game = game;
     game.fps = 30;//24
-    game.preload('chara1.gif', 'map2.gif', 'bear.gif', 'bullet.png','map.gif', 'effect0.gif'
+    game.preload('chara1.gif', 'map2.gif', 'bear.gif', 'bullet.png','map.gif', 'map1.gif', 'effect0.gif'
     ,'gameover.png', 'clear.png', 'blast_small.wav', 'bullet.wav', 'bullet2.mp3', 'bgm.mp3');
     game.keybind(90, 'a');// Zキー
     game.keybind(88, 'b');// Xキー
     game.keybind(80, 'start');// Xキー
     game.maxLevel = 2;
     game.onload = function() {
-        var bgm = enchant.Sound.load('bgm.mp3', 'audio/mp3');
-        bgm.play();
+        // 結論：BGM+SEは無理
+        /*var bgm = game.assets['bgm.mp3'].clone();//enchant.Sound.load('bgm.mp3', 'audio/mp3');
+        bgm.volume = .3;
+        bgm.play();*/
         this.iniedPlayer = false;
         this.isOvered = false;
         this.isCleared = false;
@@ -64,7 +66,8 @@ window.onload = function() {
         apad.y = 224;
         this.gameScene.addChild(pad);
         this.gameScene.addChild(apad);
-        this.gameScene.backgroundColor = 'rgb(182, 255, 255)';
+         this.gameScene.backgroundColor = 'rgb(182, 255, 255)';
+        
         this.pushScene(this.gameScene);
         enchant.level = enchant.world.levels[0];//enchant.world.levelNum];
         
@@ -118,7 +121,17 @@ window.onload = function() {
         apad.y = 224;
         this.gameScene.addChild(pad);
         this.gameScene.addChild(apad);
-        this.gameScene.backgroundColor = 'rgb(182, 255, 255)';
+        switch (curNum) {
+            default :
+                this.gameScene.backgroundColor = 'rgb(182, 255, 255)';
+                break;
+            case 1:
+                this.gameScene.backgroundColor = 'rgb(255, 30, 55)';
+                break;
+            case 2:
+                this.gameScene.backgroundColor = 'rgb(100, 100, 255)';
+                break;
+        }
         this.pushScene(this.gameScene);
     };
     game.start();

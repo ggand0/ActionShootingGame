@@ -17,6 +17,7 @@ enchant();
             this.bullet_se = enchant.Sound.load('bullet.wav', 'audio/wav');
             this.bullet_se.volume = 0.3;
             this.timer = new Timer(15);// ダメージ後の無敵時間にセット 30
+            this.shotCount = 0;
             //this.bulTimer = new Timer(10);// SEが重過ぎるので連打制限用
             //this.bulTimer.play();
             this.addEventListener('abuttonup', function() {
@@ -54,10 +55,14 @@ enchant();
             this.ses = new Array();
         },
         shot: function(type, dir) {
-            console.log("shot");// 3回呼ばれている！？
-            var se = enchant.Sound.load('bullet2.mp3', 'audio/mp3');
-            se.volume = 0.1;
-            se.play();
+            this.shotCount++;
+            console.log("shot");// 3回呼ばれている！？←修正
+            if (this.shotCount % 2 == 0) {
+                //var se = enchant.Sound.load('bullet2.mp3', 'audio/mp3');
+                var se = enchant.game.assets['bullet2.mp3'].clone();
+                se.volume = 0.1;
+                se.play();
+            }
             //this.bulTimer.set(10);
             //this.bulTimer.play();
             

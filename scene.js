@@ -11,7 +11,17 @@ enchant();
             this.addChild(o);
             this.timer = new Timer(120);
             this.timer.play();
-            this.backgroundColor = 'rgb(182, 255, 255)';
+            switch (enchant.game.levelNum) {
+                default :
+                    this.backgroundColor = 'rgb(182, 255, 255)';
+                    break;
+                case 1:
+                    this.backgroundColor = 'rgb(255, 30, 55)';
+                    break;
+                case 2:
+                    this.backgroundColor = 'rgb(100, 100, 255)';
+                    break;
+            }
             this.curNum = enchant.world.levelNum;
             this.addEventListener('enterframe', function() {
                 this.update();
@@ -42,7 +52,17 @@ enchant();
             this.addChild(o);
             this.timer = new Timer(120);
             this.timer.play();
-            this.backgroundColor = 'rgb(182, 255, 255)';
+            switch (enchant.game.levelNum) {
+                default :
+                    this.backgroundColor = 'rgb(182, 255, 255)';
+                    break;
+                case 1:
+                    this.backgroundColor = 'rgb(255, 30, 55)';
+                    break;
+                case 2:
+                    this.backgroundColor = 'rgb(100, 100, 255)';
+                    break;
+            }
             this.curNum = enchant.world.levelNum;
             this.addEventListener('enterframe', function() {
                 this.update();
