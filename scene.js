@@ -23,6 +23,7 @@ enchant();
                     break;
             }
             this.curNum = enchant.world.levelNum;
+            enchant.game.score /= 3;// ペナルティ
             this.addEventListener('enterframe', function() {
                 this.update();
             });
@@ -34,7 +35,7 @@ enchant();
                     enchant.game.popScene();
                     //enchant.game.onload();
                     enchant.game.ini(this.curNum);
-                    enchant.level = enchant.world.levels[0];//[enchant.world.levelNum];// 入れないとスクロールされない...?
+                    enchant.level = enchant.world.levels[0];
                 }
             }
             
@@ -67,6 +68,14 @@ enchant();
             this.addEventListener('enterframe', function() {
                 this.update();
             });
+            if (enchant.game.levelNum == enchant.game.maxLevel) {
+                var logo = new Label();
+                logo.x = 0;
+                logo.y = 200;
+                logo.font = "12px 'Arial Black'";
+                logo.text = "Congrats! You've cleared all lvl. ty for playing!!";
+                this.addChild(logo);
+            }
         },
         update:function() {
             if (this.timer.isOver()) {
@@ -74,12 +83,8 @@ enchant();
                     console.log("cls over");
                     enchant.game.popScene();
                     enchant.game.popScene();
-                    //enchant.game.onload(1);//++enchant.world.levelNum);
-                    //enchant.world = new World();
-                    //enchant.world.levelNum = this.curNum;
                     enchant.game.ini(this.curNum+1);
-                    //enchant.world.levelNum = this.curNum+1;
-                    enchant.level = enchant.world.levels[0];//enchant.world.levelNum];
+                    enchant.level = enchant.world.levels[0];
                 }
             }
             

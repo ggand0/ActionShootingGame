@@ -36,7 +36,9 @@ enchant();
                         }
                 });
                 enchant.game.addEventListener('startbuttonhasbeendown', function() {
-                    if (!enchant.game.isPaused) {
+                    // 一旦デバッグ用にする
+                    enchant.level.bear.x = 198 * 20;//enchant.level.
+                    /*if (!enchant.game.isPaused) {
                         enchant.game.isPaused = true;
                         enchant.game.p.text = "PAUSED";
                         enchant.game.pause();
@@ -45,21 +47,17 @@ enchant();
                         enchant.Game.start();
                         enchant.game.p.text = "";
                         enchant.game.isPaused = false;
-                    }
+                    }*/
                 });
-                enchant.game.iniedPlayer = true;// gameOver時にも追加されてしまうので仕方なく
+                enchant.game.iniedPlayer = true;// gameOver時にも追加されてしまうのでフラグ作成
             }
-            /*this.addEventListener('abuttonhasbeendown', function() {
-                this.shot(1);
-            });*/
             this.ses = new Array();
         },
         shot: function(type, dir) {
             this.shotCount++;
-            //console.log("shot");// 3回呼ばれている！？←修正
             if (this.shotCount % 2 == 0) {
-                //var se = enchant.Sound.load('bullet2.mp3', 'audio/mp3');
-                var se = enchant.game.assets['bullet2.mp3'].clone();
+                var se = enchant.Sound.load('bullet2.mp3', 'audio/mp3');
+                //var se = enchant.game.assets['bullet2.mp3'].clone();
                 se.volume = 0.1;
                 se.play();
             }
@@ -131,7 +129,7 @@ enchant();
                 this.isDamaged = false;
             }
             
-            if (this.y > enchant.game.height) {
+            if (this.y > enchant.game.height || this.HP <= 0) {
                 var score = Math.round(this.x);//bear.x);
                 this.frame = 3;
                 this.v.y = -0;

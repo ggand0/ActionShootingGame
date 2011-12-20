@@ -4,7 +4,7 @@ window.onload = function() {
     var game = new Game(320, 320);
     enchant.game = game;
     game.fps = 30;//24
-    game.preload('chara1.gif', 'map2.gif', 'bear.gif', 'bullet.png','map.gif', 'map1.gif', 'effect0.gif'
+    game.preload('kawaz.png', 'chara1.gif', 'map2.gif', 'bear.gif', 'bullet.png','map.gif', 'map1.gif', 'effect0.gif'
     ,'gameover.png', 'clear.png', 'blast_small.wav', 'bullet.wav', 'bullet2.mp3', 'bgm.mp3');
     game.keybind(90, 'a');// Zキー
     game.keybind(88, 'b');// Xキー
@@ -66,14 +66,37 @@ window.onload = function() {
         apad.y = 224;
         this.gameScene.addChild(pad);
         this.gameScene.addChild(apad);
-         this.gameScene.backgroundColor = 'rgb(182, 255, 255)';
+        this.gameScene.backgroundColor = 'rgb(182, 255, 255)';
         
-        this.pushScene(this.gameScene);
-        enchant.level = enchant.world.levels[0];//enchant.world.levelNum];
-        
+        // ロゴ
+        var titleScene = new Scene();
+        var logo = new Scene();
+        var logoSurface = game.assets['kawaz.png']
+        var logo = new Sprite(logoSurface.width, logoSurface.height);
+        logo.x = 20;
+        logo.y = 100;
+        logo.image = logoSurface;
+        logo.scale(.5, .5);
+        titleScene.addChild(logo);
+        titleScene.e = 0;
+        titleScene.addEventListener('enterframe', function() {
+            this.e += .01;//004;//if (enchant.game.frame % 5 == 0) 
+            logo._element.style.opacity = Math.sin(this.e * 8) / 2.0 + 0.5;;
+        });
+        game.pushScene(titleScene);
+        //this.pushScene(this.gameScene);
+        var v = new Vector(0, 0);
+        var timer = new Timer(60);
+        timer.play();
+        this.startGame = false;
+        enchant.level = enchant.world.levels[0];
         this.addEventListener('enterframe', function() {
-            //enchant.level = enchant.world.levels[enchant.world.levelNum];     // ClearSceneでやるか！
-            
+            timer.count();
+            if (!this.startGame && timer.isOver()){
+                console.log("game");
+                game.pushScene(this.gameScene);
+                this.startGame = true;
+            }
             if (this.isOvered) {
                 var overScene = new GameOver();
                 this.pushScene(overScene);
@@ -132,6 +155,8 @@ window.onload = function() {
                 this.gameScene.backgroundColor = 'rgb(100, 100, 255)';
                 break;
         }
+        
+        
         this.pushScene(this.gameScene);
     };
     game.start();

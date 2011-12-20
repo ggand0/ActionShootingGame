@@ -29,7 +29,7 @@ enchant();
             }
         },
         shot:function() {
-            if (Math.abs(this.x, enchant.level.x) > 320) return;
+            //if (Math.abs(this.x, enchant.level.x) > 320) return;
             
             switch(this.type) {
                 case 0:
@@ -74,16 +74,18 @@ enchant();
             enchant.Enemy.call(this, x, y, image, map, pos, type);
             this.HP = 2;
             if (type == 0) {
-                isActive = true;// t0 : 前から追跡するタイプ
+                isActive = false;// t0 : 前から追跡するタイプ
+                this.visible = false;
             } else {
                 isActive = false;
                 this.visible = false;
             }
+            this.pose = 0;
         },
         update:function() {
             var distance = this.x - enchant.level.bear.x;// Math.abs()
             // Playerが初期位置を超えてから追跡させたい
-            if (!this.isActive && this.type == 1 && distance < -320) {
+            if (!this.isActive && (this.type == 1 && distance < -320 || this.type == 0 && distance < 320)) {
                 console.log("chaseEnemy's become active");
                 this.isActive = true;
                 this.visible = true;
@@ -96,21 +98,40 @@ enchant();
         update_motion_ex:function() {
             if (enchant.game.frame % 60 == 0) this.v.y = -17;
             this.update_motion();
+            
+            if (this.v.x != 0) {
+                if (enchant.game.frame % 3 == 0) {
+                    this.pose++;
+                    this.pose %= 2;// 0, 1にする
+                }
+                this.frame = this.pose + 1;// frame == 1, 2
+            } else {
+                this.frame = 0;
+            }
         }
     });
     enchant.ChargeEnemy = Class.create(enchant.Enemy, {
         initialize:function(x, y, image, map, pos, type) {
             enchant.Enemy.call(this, x, y, image, map, pos, type);
             this.HP = 2;
-            this.v.x = 7;
             this.isActive = false;
             this.visible = false;
+            switch (this.type) {
+                default:
+                    this.v.x = -7;
+                    this.rotate(-90);
+                    break;
+                case 1:
+                    this.v.x = 7;
+                    this.rotate(90);
+                    break;
+            }
         },
         update:function() {
             var distance = this.x - enchant.level.bear.x;
             
             //if (this.type == 1 && distance < -320 || this.type == 0) {
-            if (!this.isActive && distance < -320) {
+            if (!this.isActive && (this.type == 1 && distance < -320 || this.type == 0 && distance < 320)) {
                 console.log("charge enemy's become active");
                 this.isActive = true;
                 this.visible = true;
