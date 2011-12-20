@@ -28,10 +28,6 @@ enchant();
             this.x = x;
             this.y = y;
             this.v = new Vector(0, 0);
-            this.addEventListener('load', function() {//'enter' 'load'
-                console.log("enter");
-                enchant.level = enchant.world.levels[enchant.world.levelNum];
-            });/**/
             this.addEventListener('enterframe', function(){
                 //if (enchant.level == undefined) enchant.level = enchant.world.levels[enchant.world.levelNum];
                 this.update();
@@ -68,9 +64,9 @@ enchant();
             });
             // 音もついでに
             if (enchant.world.deadNum % 3 == 0) {// SE重すぎるのでここも削減
-                this.se = enchant.Sound.load('blast_small.wav', 'audio/wav');
+                /*this.se = enchant.Sound.load('blast_small.wav', 'audio/wav');
                 this.se.volume = 0.1;
-                this.se.play();
+                this.se.play();*/
             }
         },
         update:function() {
@@ -81,7 +77,7 @@ enchant();
             this.count++;
         },
         pop:function() {
-            console.log(this.frame);
+            //console.log(this.frame);
             enchant.level.removeChild(this);
             this.removeEventListener('enterframe', arguments.callee);
         }

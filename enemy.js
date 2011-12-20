@@ -9,13 +9,23 @@ enchant();
             this.type = type;
             this.x = pos.x;
             this.y = pos.y;//this.pos = pos;
-            this.isActive = true;
+            this.isActive = false;
+            this.visible = false;
         },
         update:function() {
-            this.update_motion();
-            r = Math.floor(Math.random()*30);
-            if (r == 0) {
-              this.shot();
+            var d = Math.abs(this.x - enchant.level.bear.x);
+            if (!this.isActive && d < 320) {
+                this.isActive = true;
+                this.visible = true;
+            }
+            
+            if (this.isActive) {
+                this.update_motion();
+                /*r = Math.floor(Math.random()*30);
+                if (r == 0) {
+                  this.shot(this.type);
+                }*/
+                this.shot(this.type);
             }
         },
         shot:function() {
@@ -55,9 +65,8 @@ enchant();
             enchant.level.removeChild(this);
             enchant.level.enemies.splice(i, 1);//(this, 1);
             this.removeEventListener('enterframe', arguments.callee);
-            //console.log(enchant.level.enemies.length);
             delete this;
-            console.log("dead");
+            //console.log("dead");
         }
     });
     enchant.ChaseEnemy = Class.create(enchant.Enemy, {

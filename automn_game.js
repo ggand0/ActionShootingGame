@@ -126,7 +126,7 @@ window.onload = function() {
                 this.gameScene.backgroundColor = 'rgb(182, 255, 255)';
                 break;
             case 1:
-                this.gameScene.backgroundColor = 'rgb(255, 30, 55)';
+                this.gameScene.backgroundColor = 'rgb(180, 30, 55)';//255,
                 break;
             case 2:
                 this.gameScene.backgroundColor = 'rgb(100, 100, 255)';

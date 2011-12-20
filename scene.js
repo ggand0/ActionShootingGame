@@ -16,7 +16,7 @@ enchant();
                     this.backgroundColor = 'rgb(182, 255, 255)';
                     break;
                 case 1:
-                    this.backgroundColor = 'rgb(255, 30, 55)';
+                    this.backgroundColor = 'rgb(180, 30, 55)';
                     break;
                 case 2:
                     this.backgroundColor = 'rgb(100, 100, 255)';
@@ -29,7 +29,7 @@ enchant();
         },
         update:function() {
             if (this.timer.isOver()) {
-                if (this.curNum < enchant.game.maxLevel) {
+                if (this.curNum <= enchant.game.maxLevel) {
                     enchant.game.popScene();
                     enchant.game.popScene();
                     //enchant.game.onload();
@@ -53,11 +53,11 @@ enchant();
             this.timer = new Timer(120);
             this.timer.play();
             switch (enchant.game.levelNum) {
-                default :
+                default:
                     this.backgroundColor = 'rgb(182, 255, 255)';
                     break;
                 case 1:
-                    this.backgroundColor = 'rgb(255, 30, 55)';
+                    this.backgroundColor = 'rgb(180, 30, 55)';
                     break;
                 case 2:
                     this.backgroundColor = 'rgb(100, 100, 255)';

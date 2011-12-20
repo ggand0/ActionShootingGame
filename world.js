@@ -55,7 +55,7 @@
                             if (e.isActive) {
                                 ishit = e.intersect(b);
                                 if (ishit) {
-                                    console.log("hit");
+                                    //console.log("hit");
                                     enchant.game.score += 100;
                                     e.HP--;
                                     b.pop();
@@ -78,7 +78,7 @@
                         if (!bear.isDamaged && bear.intersect(e)) {
                             bear.HP--;
                             bear.isDamaged = true;
-                            console.log("damaged!");
+                            //console.log("damaged!");
                             return false;
                         }
                     }

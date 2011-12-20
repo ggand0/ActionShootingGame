@@ -56,7 +56,7 @@ enchant();
         },
         shot: function(type, dir) {
             this.shotCount++;
-            console.log("shot");// 3回呼ばれている！？←修正
+            //console.log("shot");// 3回呼ばれている！？←修正
             if (this.shotCount % 2 == 0) {
                 //var se = enchant.Sound.load('bullet2.mp3', 'audio/mp3');
                 var se = enchant.game.assets['bullet2.mp3'].clone();
