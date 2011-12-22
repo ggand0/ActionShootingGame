@@ -16,7 +16,7 @@ enchant();
                     this.backgroundColor = 'rgb(182, 255, 255)';
                     break;
                 case 1:
-                    this.backgroundColor = 'rgb(180, 30, 55)';
+                    this.backgroundColor = 'rgb(120, 30, 55)';
                     break;
                 case 2:
                     this.backgroundColor = 'rgb(100, 100, 255)';
@@ -24,6 +24,7 @@ enchant();
             }
             this.curNum = enchant.world.levelNum;
             enchant.game.score /= 3;// ペナルティ
+            enchant.game.assets['gameover.mp3'].play();
             this.addEventListener('enterframe', function() {
                 this.update();
             });
@@ -46,6 +47,7 @@ enchant();
     enchant.ClearScene = Class.create(enchant.Scene, {
         initialize:function() {
             enchant.Scene.call(this);
+            //_system.gc();
             var o = new Sprite(267, 48, enchant.game.assets['clear.png']);
             o.image = enchant.game.assets['clear.png'];
             o.x = 160 - 267 / 2;
@@ -55,12 +57,15 @@ enchant();
             this.timer.play();
             switch (enchant.game.levelNum) {
                 default:
+                    var se = enchant.game.assets['clear0.wav'].play();
                     this.backgroundColor = 'rgb(182, 255, 255)';
                     break;
                 case 1:
-                    this.backgroundColor = 'rgb(180, 30, 55)';
+                    enchant.game.assets['clear0.wav'].play();
+                    this.backgroundColor = 'rgb(120, 30, 55)';
                     break;
                 case 2:
+                    enchant.game.assets['clear1.wav'].play();
                     this.backgroundColor = 'rgb(100, 100, 255)';
                     break;
             }

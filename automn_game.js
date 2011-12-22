@@ -5,7 +5,7 @@ window.onload = function() {
     enchant.game = game;
     game.fps = 30;//24
     game.preload('kawaz.png', 'chara1.gif', 'map2.gif', 'bear.gif', 'bullet.png','map.gif', 'map1.gif', 'effect0.gif'
-    ,'gameover.png', 'clear.png', 'blast_small.wav', 'bullet.wav', 'bullet2.mp3', 'bgm.mp3');
+    ,'gameover.png', 'clear.png', 'blast_small.wav', 'bullet.wav', 'bullet2.mp3', 'bgm.mp3', 'gameover.mp3', 'clear0.wav', 'clear1.wav');
     game.keybind(90, 'a');// Zキー
     game.keybind(88, 'b');// Xキー
     game.keybind(80, 'start');// Xキー
@@ -149,7 +149,7 @@ window.onload = function() {
                 this.gameScene.backgroundColor = 'rgb(182, 255, 255)';
                 break;
             case 1:
-                this.gameScene.backgroundColor = 'rgb(180, 30, 55)';//255,
+                this.gameScene.backgroundColor = 'rgb(120, 30, 55)';//180,
                 break;
             case 2:
                 this.gameScene.backgroundColor = 'rgb(100, 100, 255)';

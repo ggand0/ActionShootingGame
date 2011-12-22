@@ -14,15 +14,15 @@ enchant();
             this.jumping = true;
             this.jumpBoost = 0;
             this.map = map;
-            this.bullet_se = enchant.Sound.load('bullet.wav', 'audio/wav');
-            this.bullet_se.volume = 0.3;
+            this.se = enchant.Sound.load('bullet2.mp3', 'audio/mp3');
+            this.se.volume = 0.1;
             this.timer = new Timer(15);// ダメージ後の無敵時間にセット 30
             this.shotCount = 0;
-            //this.bulTimer = new Timer(10);// SEが重過ぎるので連打制限用
-            //this.bulTimer.play();
-            this.addEventListener('abuttonup', function() {
+            this.bulTimer = new Timer(10);// SEが重過ぎるので連打制限用
+            this.bulTimer.play();
+            /*this.addEventListener('abuttonup', function() {
                 this.shot(1);
-            });/**/
+            });*/
             // gameに毎回追加してたせいだな...
             if (enchant.game.levelNum == 0 && !enchant.game.iniedPlayer) {
                 enchant.game.addEventListener('abuttonhasbeendown', function() {
@@ -55,14 +55,34 @@ enchant();
         },
         shot: function(type, dir) {
             this.shotCount++;
-            if (this.shotCount % 2 == 0) {
-                var se = enchant.Sound.load('bullet2.mp3', 'audio/mp3');
-                //var se = enchant.game.assets['bullet2.mp3'].clone();
-                se.volume = 0.1;
+            /*console.log(this.se.currentTime);
+            if (this.se.currentTime == 0) this.se.play();
+            else {
+                var se = enchant.game.assets['bullet2.mp3'].clone();
+                se.volume = .1;
                 se.play();
-            }
-            //this.bulTimer.set(10);
-            //this.bulTimer.play();
+            }*/
+            
+            /*if (this.shotCount % 2 == 0) {
+                var se = enchant.game.assets['bullet2.mp3'].clone();
+                se.volume = .1;
+                se.play();
+            } else {
+                 //enchant.game.assets['bullet2.mp3'].play();
+            }*/
+            
+            //enchant.game.assets['bullet2.mp3'].play();
+            //var audio = new Audio("bullet2.mp3");
+            //audio.play();
+            /*if (this.shotCount % 2 == 0) {
+                //var se = enchant.Sound.load('bullet2.mp3', 'audio/mp3');
+                //var se = enchant.game.assets['bullet2.mp3'].clone();
+                //se.volume = 0.1;
+                //se.play();
+                this.bullet_se.play();zzz
+            }*/
+            this.bulTimer.set(3);
+            this.bulTimer.play();
             
             switch (type) {
                 case 0:
@@ -111,7 +131,7 @@ enchant();
             this.damage_detection();
 
             this.timer.count();
-            //this.bulTimer.count();
+            this.bulTimer.count();
         },
         damage_detection:function() {// ダメージ判定、死亡判定
             if (this.isDamaged && !this.iniTimer) {
@@ -149,7 +169,7 @@ enchant();
             this.frame = 0;
             this.frameCount++;
             if (!this.isDamaged) {
-                if (enchant.game.input.left) this.v.x = -7;//-6;
+                if (enchant.game.input.left) this.v.x = -7;//-7
                 if (enchant.game.input.right) this.v.x = 7;
                 if (this.jumping) {
                 if (!enchant.game.input.b) {

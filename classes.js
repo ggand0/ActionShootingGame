@@ -51,7 +51,7 @@ enchant();
         }
     });
     enchant.Effect = Class.create(Sprite, {
-        initialize:function(x, y, image, frameNum, pos) {
+        initialize:function(x, y, image, frameNum, pos, play) {
             Sprite.call(this, x, y, image);
             this.frameNum = frameNum;
             this.image = image;
@@ -63,10 +63,12 @@ enchant();
                 this.update();
             });
             // 音もついでに
-            if (enchant.world.deadNum % 3 == 0) {// SE重すぎるのでここも削減
-                /*this.se = enchant.Sound.load('blast_small.wav', 'audio/wav');
-                this.se.volume = 0.1;
-                this.se.play();*/
+            if (play) {//enchant.world.deadNum % 5 == 0) {// SE重すぎるのでここも削減
+                //enchant.game.assets['blast_small.wav'].play();
+
+                var se = enchant.Sound.load('blast_small.wav', 'audio/wav');
+                se.volume = 0.3;
+                se.play();/**/
             }
         },
         update:function() {

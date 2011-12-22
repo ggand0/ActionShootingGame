@@ -61,8 +61,13 @@
                                     b.pop();
                                     if (e.HP <= 0) {
                                         enchant.game.score += 500;
-                                        this.deadNum++;
-                                        var ef = new Effect(16, 16, enchant.game.assets['effect0.gif'], 5, new Vector(e.x, e.y));
+                                        enchant.world.deadNum++;
+                                        /*if (enchant.world.deadNum % 5 == 0) {
+                                            var ef = new Effect(16, 16, enchant.game.assets['effect0.gif'], 5, new Vector(e.x, e.y), true);
+                                        } else {
+                                            var ef = new Effect(16, 16, enchant.game.assets['effect0.gif'], 5, new Vector(e.x, e.y), false);
+                                        }*/
+                                        var ef = new Effect(16, 16, enchant.game.assets['effect0.gif'], 5, new Vector(e.x, e.y), true);
                                         enchant.level.addChild(ef);
                                         e.pop(j);
                                     }
