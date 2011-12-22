@@ -8,7 +8,7 @@ enchant();
             this.v.x = -3;
             this.type = type;
             this.x = pos.x;
-            this.y = pos.y;//this.pos = pos;
+            this.y = pos.y;
             this.isActive = false;
             this.visible = false;
         },
@@ -21,21 +21,14 @@ enchant();
             
             if (this.isActive) {
                 this.update_motion();
-                /*r = Math.floor(Math.random()*30);
-                if (r == 0) {
-                  this.shot(this.type);
-                }*/
                 this.shot(this.type);
             }
         },
         shot:function() {
-            //if (Math.abs(this.x, enchant.level.x) > 320) return;
-            
             switch(this.type) {
                 case 0:
                     if (enchant.game.frame % 20 == 0) {
-                        var b = new Bullet(24, 24//this.x + 16, this.y + this.offset
-                                , new Vector(-1, 0), 10, this, 'Enemy');
+                        var b = new Bullet(24, 24, new Vector(-1, 0), 10, this, 'Enemy');
                         enchant.level.bullets.push(b);
                         enchant.level.addChild(b);
                     }
@@ -44,15 +37,10 @@ enchant();
                     if (enchant.game.frame % 20 == 0) {
                         var s = new Vector(0, 0);
                         var rad = Math.atan2(enchant.level.bear.x - this.x, enchant.level.bear.y - this.y);
-                        //rad = Math.PI * 2 - 90 * Math.PI / 180.0;
-                        //rad += 90 * Math.PI / 180.0;
-                        //rad = -rad + Math.PI;
-                        //rad += 270 * Math.PI / 180.0;
                         rad += -90 * Math.PI / 180.0;
-                        rad = -rad;// + Math.PI;
+                        rad = -rad;
                         s.x = Math.cos(rad);
                         s.y = Math.sin(rad);
-                        //console.log(rad * 180.0 / Math.PI);
                         var b = new Bullet(24, 24, s, 10, this, 'Enemy');
                         enchant.level.bullets.push(b);
                         enchant.level.addChild(b);
@@ -63,35 +51,28 @@ enchant();
         pop:function(i) {
             this.isAlive = false;
             enchant.level.removeChild(this);
-            enchant.level.enemies.splice(i, 1);//(this, 1);
+            enchant.level.enemies.splice(i, 1);
             this.removeEventListener('enterframe', arguments.callee);
             delete this;
-            //console.log("dead");
         }
     });
     enchant.ChaseEnemy = Class.create(enchant.Enemy, {
         initialize:function(x, y, image, map, pos, type) {
             enchant.Enemy.call(this, x, y, image, map, pos, type);
             this.HP = 2;
-            if (type == 0) {
-                isActive = false;// t0 : 前から追跡するタイプ
-                this.visible = false;
-            } else {
-                isActive = false;
-                this.visible = false;
-            }
+            this.isActive = false;
+            this.visible = false;
             this.pose = 0;
         },
         update:function() {
-            var distance = this.x - enchant.level.bear.x;// Math.abs()
-            // Playerが初期位置を超えてから追跡させたい
+            var distance = this.x - enchant.level.bear.x;
+            // Playerが初期位置を超えてから追跡させる
             if (!this.isActive && (this.type == 1 && distance < -320 || this.type == 0 && distance < 320)) {
-                console.log("chaseEnemy's become active");
                 this.isActive = true;
                 this.visible = true;
             }
             if (this.isActive && this.visible) {
-                this.v.x = this.x < enchant.level.bear.x ? 6 : -6;//3
+                this.v.x = this.x < enchant.level.bear.x ? 6 : -6;
                 this.update_motion_ex();
             }
         },
@@ -102,9 +83,9 @@ enchant();
             if (this.v.x != 0) {
                 if (enchant.game.frame % 3 == 0) {
                     this.pose++;
-                    this.pose %= 2;// 0, 1にする
+                    this.pose %= 2;
                 }
-                this.frame = this.pose + 1;// frame == 1, 2
+                this.frame = this.pose + 1;
             } else {
                 this.frame = 0;
             }
@@ -130,9 +111,7 @@ enchant();
         update:function() {
             var distance = this.x - enchant.level.bear.x;
             
-            //if (this.type == 1 && distance < -320 || this.type == 0) {
             if (!this.isActive && (this.type == 1 && distance < -320 || this.type == 0 && distance < 320)) {
-                console.log("charge enemy's become active");
                 this.isActive = true;
                 this.visible = true;
             }

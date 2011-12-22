@@ -5,7 +5,7 @@ enchant();
         initialize:function() {
             enchant.Scene.call(this);
             var o = new Sprite(189, 97, enchant.game.assets['gameover.png']);
-            o.image = enchant.game.assets['gameover.png'];// imageが何故かコンストラクタで入らずここでようやく入る
+            o.image = enchant.game.assets['gameover.png'];
             o.x = 160 - 189 / 2;
             o.y = 160 - 89 / 2;
             this.addChild(o);
@@ -34,7 +34,6 @@ enchant();
                 if (this.curNum <= enchant.game.maxLevel) {
                     enchant.game.popScene();
                     enchant.game.popScene();
-                    //enchant.game.onload();
                     enchant.game.ini(this.curNum);
                     enchant.level = enchant.world.levels[0];
                 }
@@ -47,7 +46,6 @@ enchant();
     enchant.ClearScene = Class.create(enchant.Scene, {
         initialize:function() {
             enchant.Scene.call(this);
-            //_system.gc();
             var o = new Sprite(267, 48, enchant.game.assets['clear.png']);
             o.image = enchant.game.assets['clear.png'];
             o.x = 160 - 267 / 2;
@@ -78,14 +76,13 @@ enchant();
                 logo.x = 0;
                 logo.y = 200;
                 logo.font = "12px 'Arial Black'";
-                logo.text = "Congrats! You've cleared all lvl. ty for playing!!";
+                logo.text = "Congrats! You've cleared all lvl. ty for playing!! Your total score is : " + enchant.game.score;
                 this.addChild(logo);
             }
         },
         update:function() {
             if (this.timer.isOver()) {
                 if (this.curNum < enchant.game.maxLevel) {
-                    console.log("cls over");
                     enchant.game.popScene();
                     enchant.game.popScene();
                     enchant.game.ini(this.curNum+1);
